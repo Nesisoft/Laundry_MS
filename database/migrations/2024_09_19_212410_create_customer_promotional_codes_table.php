@@ -11,11 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customers_promotional_codes', function (Blueprint $table) {
+        Schema::create('customer_promotional_codes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('code_id')->constrained('promotional_codes')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->unsignedBigInteger('code_id');
             $table->foreignId('customer_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
+            
+            $table->foreign('code_id')->references('id')->on('promotional_codes')->onDelete('cascade')->onUpdate('cascade');
+
             $table->index('created_at');
             $table->index('updated_at');
         });

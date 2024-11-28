@@ -10,7 +10,10 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('business_id');  // Foreign key column
+            $table->foreign('business_id')->references('id')->on('businesses')->onDelete('cascade')->onUpdate('cascade');
             $table->string('code')->unique();
             $table->boolean('use_promo_code')->default(false);
             $table->foreignId('user_promotional_code_id')->nullable()->constrained('users_promotional_codes')->nullOnDelete()->cascadeOnUpdate();

@@ -11,7 +11,11 @@ return new class extends Migration
         Schema::create('delivery_requests', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('order_id')->nullable();
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('customer_id')->nullable();
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('business_id');  // Foreign key column
+            $table->foreign('business_id')->references('id')->on('businesses')->onDelete('cascade')->onUpdate('cascade');
             $table->string('location', 255);
             $table->decimal('latitude', 9, 6);
             $table->decimal('longitude', 9, 6);
@@ -21,10 +25,6 @@ return new class extends Migration
             $table->text('note')->nullable();
             $table->enum('status', ['pending', 'accepted', 'in-progress', 'completed', 'cancelled'])->default('pending');
             $table->timestamps();
-
-            // Foreign key constraint
-            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade')->onUpdate('cascade');
 
             // Indexes
             $table->index('status', 'delivery_requests_status_idx1');
