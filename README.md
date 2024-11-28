@@ -1,0 +1,1 @@
+# Laundry management app for settings
