@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('business_id');  // Foreign key column
+            $table->unsignedBigInteger('business_id')->nullable();  // Foreign key column
             $table->foreign('business_id')->references('id')->on('businesses')->onDelete('cascade')->onUpdate('cascade');
             $table->string('name');
             $table->text('description')->nullable();

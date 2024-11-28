@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('business_id');  // Foreign key column
+            $table->unsignedBigInteger('business_id')->nullable();  // Foreign key column
             $table->foreign('business_id')->references('id')->on('businesses')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('service_id')->nullable();
             $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade')->onUpdate('cascade');

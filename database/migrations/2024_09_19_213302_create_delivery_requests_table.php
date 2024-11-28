@@ -14,7 +14,7 @@ return new class extends Migration
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('business_id');  // Foreign key column
+            $table->unsignedBigInteger('business_id')->nullable();  // Foreign key column
             $table->foreign('business_id')->references('id')->on('businesses')->onDelete('cascade')->onUpdate('cascade');
             $table->string('location', 255);
             $table->decimal('latitude', 9, 6);

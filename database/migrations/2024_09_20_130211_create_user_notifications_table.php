@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('user_notifications', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->enum('category', ['service', 'system'])->default('service');
             $table->enum('type', ['pickup', 'delivery', 'payment', 'general']);
             $table->string('title', 255);
