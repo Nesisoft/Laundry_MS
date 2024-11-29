@@ -14,10 +14,9 @@ return new class extends Migration
             $table->foreign('business_id')->references('id')->on('businesses')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('user_id')->nullable();  // Foreign key column
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->string('description')->nullable();
-            $table->enum('apply_to', ['all', 'specific'])->default('all');
-            $table->enum('discount_type', ['percentage', 'fixed']);
+            $table->enum('discount_type', ['percentage', 'amount'])->default('percentage');
             $table->decimal('discount', 10, 2);
+            $table->string('description')->nullable();
             $table->date('expiration_date')->nullable();
             $table->timestamps();
             

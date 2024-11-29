@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('business_id')->nullable();  // Foreign key column
             $table->foreign('business_id')->references('id')->on('businesses')->onDelete('cascade')->onUpdate('cascade');
-            $table->enum('type', ['manager', 'user'])->default('manager');
+            $table->enum('type', ['admin', 'manager', 'user'])->default('manager');
             $table->string('email')->unique();
             $table->string('username')->unique();
             $table->string('password');
