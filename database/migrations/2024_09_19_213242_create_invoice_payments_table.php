@@ -10,14 +10,11 @@ return new class extends Migration
     {
         Schema::create('invoice_payments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('invoice_id');
+            $table->foreignId('invoice_id')->constrained('invoices')->cascadeOnDelete()->cascadeOnUpdate();
             $table->decimal('amount', 10, 2);
             $table->enum('method', ['Cash', 'MoMo', 'Card']);
-            $table->enum('status', ['Failed', 'Successful']);
+            $table->enum('status', ['fully paid', 'partly paid']);
             $table->timestamps();
-
-            // Foreign key constraint
-            $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade')->onUpdate('cascade');
 
             // Indexes
             $table->index('amount', 'invoice_payments_amount_idx1');

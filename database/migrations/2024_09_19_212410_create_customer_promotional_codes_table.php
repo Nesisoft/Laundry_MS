@@ -14,10 +14,12 @@ return new class extends Migration
         Schema::create('customer_promotional_codes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('code_id');
-            $table->foreignId('customer_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->timestamps();
-            
             $table->foreign('code_id')->references('id')->on('promotional_codes')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('customer_id')->nullable();  // Foreign key column
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('user_id')->nullable();  // Foreign key column
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->timestamps();
 
             $table->index('created_at');
             $table->index('updated_at');

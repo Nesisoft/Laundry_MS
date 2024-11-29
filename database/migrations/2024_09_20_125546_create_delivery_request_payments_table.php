@@ -13,7 +13,7 @@ return new class extends Migration
             $table->unsignedBigInteger('request_id');
             $table->decimal('amount', 10, 2);
             $table->enum('method', ['Cash', 'MoMo', 'Card']);
-            $table->enum('status', ['Failed', 'Successful']);
+            $table->enum('status', ['paid', 'unpaid']);
             $table->timestamps();
 
             // Foreign key constraint

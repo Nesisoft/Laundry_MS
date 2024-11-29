@@ -10,13 +10,9 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('customer_id')->nullable();
-            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('business_id')->nullable();  // Foreign key column
-            $table->foreign('business_id')->references('id')->on('businesses')->onDelete('cascade')->onUpdate('cascade');
-            $table->string('code')->unique();
-            $table->boolean('use_promo_code')->default(false);
-            $table->foreignId('customer_promotional_code_id')->nullable()->constrained('customer_promotional_codes')->nullOnDelete()->cascadeOnUpdate();
+            $table->foreignId('business_id')->constrained('businesses')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('order_status_id')->constrained('order_statuses')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('status');
             $table->timestamps();
 

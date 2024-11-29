@@ -13,26 +13,20 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('address_id')->nullable();
-            $table->foreign('address_id')->references('id')->on('addresses')->onDelete('set null')->onUpdate('cascade');
+            $table->unsignedBigInteger('business_id')->nullable();  // Foreign key column
+            $table->foreign('business_id')->references('id')->on('businesses')->onDelete('cascade')->onUpdate('cascade');
+            $table->enum('type', ['manager', 'user'])->default('manager');
             $table->string('email')->unique();
+            $table->string('username')->unique();
             $table->string('password');
-            $table->enum('type', ['admin', 'manager'])->default('manager');
-            $table->string('first_name', 255);
-            $table->string('last_name', 255);
-            $table->string('full_name', 255)->nullable();
-            $table->string('phone_number', 20);
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
 
             // Indexes
-            $table->index('email', 'users_email_idx1');
-            $table->index('password', 'users_password_idx1');
             $table->index('type', 'users_type_idx1');
-            $table->index('first_name', 'users_first_name_idx1');
-            $table->index('last_name', 'users_last_name_idx1');
-            $table->index('full_name', 'users_full_name_idx1');
-            $table->index('phone_number', 'users_phone_number_idx1');
+            $table->index('email', 'users_email_idx1');
+            $table->index('username', 'users_username_idx1');
+            $table->index('password', 'users_password_idx1');
             $table->index('created_at', 'users_created_at_idx1');
             $table->index('updated_at', 'users_updated_at_idx1');
         });

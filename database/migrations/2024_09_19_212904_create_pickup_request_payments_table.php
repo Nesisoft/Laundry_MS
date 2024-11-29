@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('request_id')->constrained('pickup_requests')->cascadeOnDelete()->cascadeOnUpdate();
             $table->decimal('amount', 10, 2);
             $table->enum('method', ['Cash', 'MoMo', 'Card']);
-            $table->enum('status', ['Failed', 'Successful']);
+            $table->enum('status', ['paid', 'unpaid']);
             $table->timestamps();
 
             // Indexes

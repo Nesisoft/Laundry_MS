@@ -8,11 +8,12 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('promotional_codes', function (Blueprint $table) {
+        Schema::create('discounts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('business_id')->nullable();
             $table->foreign('business_id')->references('id')->on('businesses')->onDelete('cascade')->onUpdate('cascade');
-            $table->string('code', 12);
+            $table->unsignedBigInteger('user_id')->nullable();  // Foreign key column
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->string('description')->nullable();
             $table->enum('apply_to', ['all', 'specific'])->default('all');
             $table->enum('discount_type', ['percentage', 'fixed']);
@@ -21,17 +22,17 @@ return new class extends Migration
             $table->timestamps();
             
             
-            $table->index('code', 'promotional_codes_code_idx1');
-            $table->index('discount_type', 'promotional_codes_discount_type_idx1');
-            $table->index('discount', 'promotional_codes_discount_idx1');
-            $table->index('expiration_date', 'promotional_codes_expiration_date_idx1');
-            $table->index('created_at', 'promotional_codes_created_at_idx1');
-            $table->index('updated_at', 'promotional_codes_updated_at_idx1');
+            $table->index('code', 'discounts_code_idx1');
+            $table->index('discount_type', 'discounts_discount_type_idx1');
+            $table->index('discount', 'discounts_discount_idx1');
+            $table->index('expiration_date', 'discounts_expiration_date_idx1');
+            $table->index('created_at', 'discounts_created_at_idx1');
+            $table->index('updated_at', 'discounts_updated_at_idx1');
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('promotional_codes');
+        Schema::dropIfExists('discounts');
     }
 };

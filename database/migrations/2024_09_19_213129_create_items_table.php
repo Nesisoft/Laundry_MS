@@ -10,14 +10,16 @@ return new class extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('business_id')->nullable();  // Foreign key column
-            $table->foreign('business_id')->references('id')->on('businesses')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('business_id')->constrained('businesses')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('name');
+            $table->decimal('amount', 10, 2);
             $table->string('image')->nullable();  // New image column
             $table->timestamps();
 
             // Indexes
             $table->index('name', 'items_name_idx1');
+            $table->index('image', 'items_image_idx1');
             $table->index('created_at', 'items_created_at_idx1');
             $table->index('updated_at', 'items_updated_at_idx1');
         });

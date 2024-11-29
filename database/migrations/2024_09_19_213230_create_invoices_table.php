@@ -10,19 +10,19 @@ return new class extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('order_id');
+            $table->foreignId('order_id')->constrained('orders')->cascadeOnDelete()->cascadeOnUpdate();
             $table->decimal('amount', 10, 2);
-            $table->decimal('discount_amount', 10, 2)->default(0.00);
+            $table->decimal('discount', 10, 2);
+            $table->decimal('discount_amount', 10, 2)->storedAs('`amount` * `discount`');
             $table->decimal('actual_amount', 10, 2)->storedAs('`amount` - `discount_amount`');
-            $table->enum('status', ['pending', 'paid', 'cancelled'])->default('pending');
+            $table->enum('status', ['fully paid', 'partly paid', 'unpaid'])->default('unpaid');
+            $table->boolean('smsed')->default(false);
             $table->timestamps();
-
-            // Foreign key constraint
-            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade')->onUpdate('cascade');
 
             // Indexes
             $table->index('amount', 'invoices_amount_idx1');
             $table->index('discount_amount', 'invoices_discount_amount_idx1');
+            $table->index('discount', 'invoices_discount_idx1');
             $table->index('actual_amount', 'invoices_actual_amount_idx1');
             $table->index('status', 'invoices_status_idx1');
             $table->index('created_at', 'invoices_created_at_idx1');

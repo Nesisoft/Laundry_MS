@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('driver_id')->constrained('drivers')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('request_id')->constrained('pickup_requests')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->enum('status', ['pending', 'accepted', 'in-progress', 'completed', 'cancelled'])->default('pending');
+            $table->enum('status', ['in-progress', 'completed', 'cancelled'])->default('in-progress');
             $table->timestamps();
 
             // Indexes

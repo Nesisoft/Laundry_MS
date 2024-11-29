@@ -10,14 +10,10 @@ return new class extends Migration
     {
         Schema::create('delivery_requests_driver_assignments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('request_id');
-            $table->unsignedBigInteger('driver_id');
-            $table->enum('status', ['pending', 'accepted', 'in-progress', 'completed', 'cancelled'])->default('pending');
+            $table->foreignId('driver_id')->constrained('drivers')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('request_id')->constrained('delivery_requests')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->enum('status', ['in-progress', 'completed', 'cancelled'])->default('in-progress');
             $table->timestamps();
-
-            // Foreign key constraints
-            $table->foreign('request_id')->references('id')->on('delivery_requests')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('driver_id')->references('id')->on('drivers')->onDelete('cascade')->onUpdate('cascade');
 
             // Indexes
             $table->index('status', 'delivery_requests_assignments_status_idx1');

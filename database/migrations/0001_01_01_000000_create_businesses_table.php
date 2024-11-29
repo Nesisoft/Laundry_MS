@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('businesses', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('address_id')->nullable();
             $table->string('access_token', 255);
-            $table->unsignedBigInteger('address_id')->nullable();  // Foreign key column
             $table->string('name', 255);
             $table->string('phone', 20)->nullable();
             $table->string('email', 255)->nullable();
