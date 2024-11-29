@@ -11,7 +11,8 @@ return new class extends Migration
         Schema::create('promotional_codes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('business_id')->nullable();
-            $table->string('code');
+            $table->foreign('business_id')->references('id')->on('businesses')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('code', 12);
             $table->string('description')->nullable();
             $table->enum('apply_to', ['all', 'specific'])->default('all');
             $table->enum('discount_type', ['percentage', 'fixed']);
@@ -19,8 +20,7 @@ return new class extends Migration
             $table->date('expiration_date')->nullable();
             $table->timestamps();
             
-            $table->foreign('business_id')->references('id')->on('businesses')->onDelete('cascade')->onUpdate('cascade');
-
+            
             $table->index('code', 'promotional_codes_code_idx1');
             $table->index('discount_type', 'promotional_codes_discount_type_idx1');
             $table->index('discount', 'promotional_codes_discount_idx1');

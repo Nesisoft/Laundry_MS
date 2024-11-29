@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -27,11 +28,11 @@ return new class extends Migration
         });
 
         // Insert initial data
-        DB::table('services')->insert([
-            ['name' => 'Washing only'],
-            ['name' => 'Ironing only'],
-            ['name' => 'Washing and Ironing']
-        ]);
+        // DB::table('services')->insert([
+        //     ['name' => 'Wash only'],
+        //     ['name' => 'Iron only'],
+        //     ['name' => 'Wash and Iron']
+        // ]);
     }
 
     /**

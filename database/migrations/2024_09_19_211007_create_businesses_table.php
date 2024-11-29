@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('businesses', function (Blueprint $table) {
             $table->id();
+            $table->string('access_token', 255);
             $table->unsignedBigInteger('address_id')->nullable();  // Foreign key column
             $table->string('name', 255);
             $table->string('phone', 20)->nullable();
@@ -29,7 +30,6 @@ return new class extends Migration
 
             // Define indexes
             $table->index('name', 'businesses_name_idx1');
-            $table->index('services', 'businesses_services_idx1');
             $table->index('logo', 'businesses_logo_idx1');
             $table->index('banner', 'businesses_banner_idx1');
             $table->index('created_at', 'businesses_created_at_idx1');

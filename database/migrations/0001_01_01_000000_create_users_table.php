@@ -13,19 +13,17 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('address_id')->nullable();
+            $table->foreign('address_id')->references('id')->on('addresses')->onDelete('set null')->onUpdate('cascade');
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('type', ['admin', 'customer', 'manager', 'driver'])->default('customer');
-            $table->unsignedBigInteger('address_id')->nullable();
+            $table->enum('type', ['admin', 'manager'])->default('manager');
             $table->string('first_name', 255);
             $table->string('last_name', 255);
             $table->string('full_name', 255)->nullable();
             $table->string('phone_number', 20);
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
-
-            // Foreign key constraints
-            $table->foreign('address_id')->references('id')->on('addresses')->onDelete('set null')->onUpdate('cascade');
 
             // Indexes
             $table->index('email', 'users_email_idx1');

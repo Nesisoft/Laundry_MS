@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();  // Foreign key column
+            $table->enum('type', ['boolean', 'string', 'array'])->default('boolean');
             $table->string('name', 255);
             $table->string('value', 255)->nullable();
 

@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('users_notification_settings', function (Blueprint $table) {
+        Schema::create('user_notification_settings', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->enum('type', ['in-app', 'email', 'sms']);
