@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('businesses', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('address_id')->nullable();
+            $table->foreign('address_id')->references('id')->on('addresses')->onDelete('set null')->onUpdate('cascade');
             $table->string('access_token', 255);
             $table->string('name', 255);
             $table->string('phone', 20)->nullable();
@@ -22,11 +23,6 @@ return new class extends Migration
             $table->string('banner', 255)->nullable();
             $table->string('motto', 255)->nullable();
             $table->timestamps();
-
-            // Define foreign key
-            $table->foreign('address_id')->references('id')->on('addresses')
-                  ->onDelete('set null')
-                  ->onUpdate('cascade');
 
             // Define indexes
             $table->index('name', 'businesses_name_idx1');
