@@ -6,27 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
-        Schema::create('customer_discounts', function (Blueprint $table) {
+        Schema::create('service_ratings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('discount_id')->constrained('discounts')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('business_id')->constrained('businesses')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->integer('rating');
+            $table->text('comment')->nullable();
             $table->timestamps();
 
+            // Indexes
+            $table->index('rating');
             $table->index('created_at');
             $table->index('updated_at');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('customer_discounts');
+        Schema::dropIfExists('service_ratings');
     }
 };

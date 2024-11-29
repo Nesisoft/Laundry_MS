@@ -13,15 +13,10 @@ return new class extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();  // Foreign key column
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->enum('type', ['boolean', 'string', 'array'])->default('boolean');
             $table->string('name', 255);
             $table->string('value', 255)->nullable();
-
-            // Define foreign key
-            $table->foreign('user_id')->references('id')->on('users')
-                  ->onDelete('cascade')
-                  ->onUpdate('cascade');
 
             // Define indexes
             $table->index('name', 'settings_name_idx1');

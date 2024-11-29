@@ -10,7 +10,8 @@ return new class extends Migration
     {
         Schema::create('notification_templates', function (Blueprint $table) {
             $table->id();
-            $table->enum('category', ['pickup', 'delivery', 'payment', 'general']);
+            $table->enum('category', ['pickup', 'delivery', 'payment', 'promotion', 'rating', 'general']);
+            $table->enum('medium', ['sms', 'email'])->default('sms');
             $table->string('title', 255);
             $table->text('message');
             $table->timestamps();
