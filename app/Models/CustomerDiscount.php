@@ -6,21 +6,26 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ServiceRating extends Model
+class CustomerDiscount extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'customer_id', 'business_id', 'rating', 'comment'
+        'discount_id', 'customer_id'
     ];
+
+    public function discount(): BelongsTo
+    {
+        return $this->belongsTo(Discount::class);
+    }
 
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
     }
 
-    public function business(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Business::class);
+        return $this->belongsTo(User::class);
     }
 }

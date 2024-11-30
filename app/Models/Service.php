@@ -5,22 +5,28 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class PickupRequestPayment extends Model
+class Service extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'request_id', 'amount', 'method', 'status'
+        'business_id', 'user_id', 'name', 'description'
     ];
+
+    public function business(): BelongsTo
+    {
+        return $this->belongsTo(Business::class);
+    }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function pickupRequest(): BelongsTo
+    public function pickupRequests(): HasMany
     {
-        return $this->belongsTo(PickupRequest::class, 'request_id');
+        return $this->hasMany(PickupRequest::class);
     }
 }

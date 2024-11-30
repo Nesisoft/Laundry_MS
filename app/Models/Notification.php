@@ -7,26 +7,25 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Item extends Model
+class Notification extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'business_id', 'user_id', 'name', 'amount', 'image'
-    ];
+    protected $fillable = ['type', 'to', 'message'];
 
     public function business(): BelongsTo
     {
         return $this->belongsTo(Business::class);
     }
 
-    public function user(): BelongsTo
+    public function customers(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->BelongsTo(Customer::class);
     }
 
-    public function orderItems(): HasMany
+    public function templates(): BelongsTo
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->BelongsTo(NotificationTemplate::class);
     }
+
 }

@@ -22,20 +22,616 @@ The manager can now:
 •	Follow driver pickup routes
 •	View and respond to customer service ratings
 •	Send email and SMS notifications to customers
-•	
 
-A customer calls to request for their laundry pickup from their house. The manager takes the details of the request and opens the app. He click a button which opens a pickup request form. The form has service type (a list of services to select from), the date for the pickup, the time for the pickup, a customer list to choose from or added if the customer doesn’t exists, the customer’s current location (which he or she can also change using a map), the cost for the pickup appears (which is calculated based on the distance of customer’s location to the branch), the Mode of Payment (‘Cash on delivery’, ‘Mobile Money’, and ‘Card (Visa or Mastercard)’, and a note or message. After filling and submitting the form, an invoice is generated and sent to the customer via email and/or SMS.
-He or she assigns the pickup request to a driver. An SMS notification is sent to the driver or employee with the request details, and customer details including the customer’s unique code. The customer also receives an SMS notification informing them of the assigned pickup request with details of the driver.
-The driver sees the notification for the assigned pickup request, opens and reads it. He or she can call the customer to arrange for the pickup (This does not use the app). The driver starts the journey by clicking a button (Just Like an Uber/Bolt driver will). A notification is sent to customer and the branch manager. A real-time tracking of the journey starts, where the customer and the branch manager can see real-time updates of the driver’s or employee’s location on a map in their app (just like an Uber/Bolt customer will see real-time updates of driver coming to pick him/her). The driver or employee when arrives at the customer’s place and gets their laundry, bags them and labels it with the customer unique code (received as part of the notification message when the pickup request was assigned to them) from the app. The driver or employee sends the customer’s laundry to the laundry shop. The customer from here can now start tracking their laundry statuses.
-The branch manager receives the customer’s laundry and prepares an invoice for the customer. The branch manager selects from a list of items (T-Shirt, Shirt, Underwear, Jeans, Caftan, Trouser, Suit (Top Only), Suit (Top & Down) etc) according to the laundry items he or she received. He or she inputs the items quantities. The totals for each item in the laundry, and grand total is automatically calculated. Discounts are automatically applied if the customer has discounts available or the branch manager also can apply discount by clicking a button and selecting the discount to apply. The branch manager submits the invoice and the laundry status is updated to ‘ready for washing’. A notification is sent to the customer with invoice details. 
-The customer opens and reads the invoice. If the customer’s pickup request has a Mode of Payment as ‘Cash on delivery’, the customer is informed that payment will be made upon delivery of laundry. But if the customer’s pickup request has a Mode of Payment as ‘Mobile Money’ or ‘Card (Visa or Mastercard)’, a payment form with a Pay Button is attached to the invoice. When the customer clicks pay button, he or she is sent to our payment service provider’s site for a secured payment. A notification is sent to customer for whether payment failed or successful. He or she is sent back to our app. Upon successful payment, a notification is sent to the branch manager for confirmation of payment and the laundry payment status updated to ‘Payment completed’.
-When all the laundry with a status of ‘ready for washing’ have been washed, the admin clicks a button and all those laundry with service type of ‘wash and fold’ changes their status to ‘ready for pickup or delivery’ and those with service type ‘wash, iron, and fold’, changes to ‘ready for ironing’. A notification is sent to all the customers. Also, after ironing, the manager clicks a button to update the status of the laundry to ‘ready for pickup or delivery’ and again a notification is sent to the customers. When a customer visits the app, they are able to see the statuses of their laundry.
-When a customer’s laundry is ready, he or she is presented with form to schedule pickup or delivery of the laundry. On the form, he or she selects either to pickup laundry (by him/herself) or have it delivered (by us), selects the date for the pickup or delivery, the time for the pickup or delivery, his or her location (if they select delivery but by default should have their location selected automatically from our system on the map) and then submits.  A notification is sent to the branch manager. A notification is sent to customer if he/she has outstanding balance to pay if their Mode of payment for the laundry ‘Mobile Money’ or ‘Card (Visa or Mastercard)’.
-The customer opens and reads the invoice. If the customer’s pickup request has a Mode of Payment as ‘Cash on delivery’, the customer is informed that payment will be made upon delivery of laundry. But if the customer’s pickup request has a Mode of Payment as ‘Mobile Money’ or ‘Card (Visa or Mastercard)’, a payment form with a pay button is attached to the invoice. When the customer clicks the pay button, he or she is sent to our payment service provider’s site for a secured payment. A notification is sent to customer for whether payment failed or successful. He or she is sent back to our app. Upon successful payment, a notification is sent to the branch manager for confirmation of payment and the laundry payment status updated to ‘Payment completed’.
-The branch manager sees the notification for the customer’s delivery request, opens and reads it. He or she can call the customer for a reschedule if no driver or employee is available for the customer selected date and time for the delivery (This does not use the app). He or she accepts the delivery request and assigns the delivery request to a driver or employee. A notification is sent to the driver or employee with the request details, and customer details including the customer’s unique code. The customer also receives a notification informing them of the assigned pickup request with details of the driver or employee.
 
-The driver or employee sees the notification for the assigned delivery request, opens and reads it. The driver or employee gets the customer’s laundry from the laundry branch shop. He or she can call the customer to arrange for the delivery (This does not use the app). He or she starts the journey by clicking a button (Just Like an Uber/Bolt driver will). A notification is sent to customer and the branch manager. A real-time tracking of the journey starts, where the customer and the branch manager can see real-time updates of the driver’s or employee’s location on a map in their app (just like an Uber/Bolt customer will see real-time updates of driver coming to deliver food to him/her). The driver or employee arrives at the customer’s place and delivers their laundry. If the customer has outstanding payment or balance, the driver informs them to make payment. If the customer’s Mode of Payment selected for the laundry is ‘cash on delivery’, he or she is asked by the driver or employee to pay cash. Otherwise, if the customer’s selected mode of payment is ‘Mobile Money’ or ‘Card (Visa or Mastercard)’, he or she is asked by the driver to pay via the app. There could be times due to network access issues, the customer might not be able to pay using the app even though he or she selected ‘‘Mobile Money’ or ‘Card (Visa or Mastercard)’. In this case the driver or employee can initiate the payment via his or her app. Upon successful completion of payment, the driver or employee clicks a button in he or her app to complete delivery of the customer’s laundry. A notification is sent to the customer for delivery and thanking them for choosing our laundry service. A notification is also sent to the branch manager for the completed delivery.
-In-app notifications, SMS, and emails should be sent at each function performed by customer, driver or employee and branch manager, from pickup to delivery. 
-The System will have an admin interface to administer the entire system, a branch manager interface to manage their branch, a driver interface to manage pickup and delivery requests assigned, and a customer interface. 
-I've got knowledge of Python (Django), JavaScript (React), HTML, CSS, MySQL (MariaDB) and I want to build this using API-First (Django Rest Framework & OpenAPI Swagger) approach. 
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('addresses', function (Blueprint $table) {
+            $table->id();
+            $table->string('street')->nullable();
+            $table->string('city')->nullable();
+            $table->string('state')->nullable();
+            $table->string('zip_code', 20)->nullable();
+            $table->string('country')->nullable();
+            $table->decimal('latitude', 9, 6)->nullable();
+            $table->decimal('longitude', 9, 6)->nullable();
+            $table->timestamps();
+        });
+    }
 
+    public function down(): void
+    {
+        Schema::dropIfExists('addresses');
+    }
+};
+
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('businesses', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('address_id')->nullable();
+            $table->foreign('address_id')->references('id')->on('addresses')->onDelete('set null')->onUpdate('cascade');
+            $table->string('access_token', 255);
+            $table->string('name', 255);
+            $table->string('phone', 20)->nullable();
+            $table->string('email', 255)->nullable();
+            $table->string('logo', 255)->nullable();
+            $table->string('banner', 255)->nullable();
+            $table->string('motto', 255)->nullable();
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('businesses');
+    }
+};
+
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('business_id')->nullable();
+            $table->foreign('business_id')->references('id')->on('businesses')->onDelete('cascade')->onUpdate('cascade');
+            $table->enum('type', ['admin', 'manager', 'user'])->default('manager');
+            $table->string('email')->unique();
+            $table->string('username')->unique();
+            $table->string('password');
+            $table->timestamp('email_verified_at')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('password_reset_tokens', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
+
+        Schema::create('sessions', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->foreignId('user_id')->nullable()->index();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('sessions');
+    }
+};
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('services', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('business_id')->constrained('businesses')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('services');
+    }
+};
+
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('vehicles', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('business_id')->constrained('businesses')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('number', 255)->unique();
+            $table->enum('type', ['car', 'motorcycle'])->default('car');
+            $table->string('model', 255)->nullable();
+            $table->string('year', 255)->nullable();
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('vehicles');
+    }
+};
+
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('drivers', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('business_id')->constrained('businesses')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->unsignedBigInteger('vehicle_id')->nullable();
+            $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('address_id')->nullable();
+            $table->foreign('address_id')->references('id')->on('addresses')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('email', 255)->nullable();
+            $table->string('phone_number', 20);
+            $table->string('first_name', 255);
+            $table->string('last_name', 255);
+            $table->string('full_name', 255)->nullable();
+            $table->enum('sex', ['male', 'female'])->default('male');
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('drivers');
+    }
+};
+
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('customers', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('business_id')->constrained('businesses')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->unsignedBigInteger('address_id')->nullable();
+            $table->foreign('address_id')->references('id')->on('addresses')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('email', 255)->nullable();
+            $table->string('phone_number', 20);
+            $table->string('first_name', 255);
+            $table->string('last_name', 255);
+            $table->string('full_name', 255)->nullable();
+            $table->enum('sex', ['male', 'female'])->default('male');
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('customers');
+    }
+};
+
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('discounts', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('business_id')->constrained('businesses')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->enum('discount_type', ['percentage', 'amount'])->default('percentage');
+            $table->decimal('discount', 10, 2);
+            $table->string('description')->nullable();
+            $table->date('expiration_date')->nullable();
+            $table->timestamps();
+            $table->index('updated_at', 'discounts_updated_at_idx1');
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('discounts');
+    }
+};
+
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('customer_discounts', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('discount_id')->constrained('discounts')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->timestamps();
+        });
+    }
+    public function down(): void
+    {
+        Schema::dropIfExists('customer_discounts');
+    }
+};
+
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('pickup_requests', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('business_id')->constrained('businesses')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('service_id')->constrained('services')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('location')->nullable();
+            $table->decimal('latitude', 9, 6)->nullable();
+            $table->decimal('longitude', 9, 6)->nullable();
+            $table->date('date');
+            $table->time('time');
+            $table->decimal('amount', 10, 2);
+            $table->text('note')->nullable();
+            $table->enum('status', ['pending', 'accepted', 'in-progress', 'completed', 'cancelled'])->default('pending');
+            $table->timestamps();
+        });
+    }
+    
+    public function down(): void
+    {
+        Schema::dropIfExists('pickup_requests');
+    }
+};
+
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('pickup_request_payments', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('request_id')->constrained('pickup_requests')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->decimal('amount', 10, 2);
+            $table->enum('method', ['Cash', 'MoMo', 'Card']);
+            $table->enum('status', ['paid', 'unpaid']);
+            $table->timestamps();
+
+            // Indexes
+            $table->index('amount');
+            $table->index('method');
+            $table->index('status');
+            $table->index('created_at');
+            $table->index('updated_at');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('pickup_request_payments');
+    }
+};
+
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('pickup_request_driver_assignments', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('driver_id')->constrained('drivers')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('request_id')->constrained('pickup_requests')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->enum('status', ['in-progress', 'completed', 'cancelled'])->default('in-progress');
+            $table->timestamps();
+
+            // Indexes
+            $table->index('status', 'pickup_request_driver_assignments_status_idx1');
+            $table->index('created_at', 'pickup_request_driver_assignments_created_at_idx1');
+            $table->index('updated_at', 'pickup_request_driver_assignments_updated_at_idx1');
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('pickup_request_driver_assignments');
+    }
+};
+
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('items', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('business_id')->constrained('businesses')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('name');
+            $table->decimal('amount', 10, 2);
+            $table->string('image')->nullable();  // New image column
+            $table->timestamps();
+
+            // Indexes
+            $table->index('name', 'items_name_idx1');
+            $table->index('image', 'items_image_idx1');
+            $table->index('created_at', 'items_created_at_idx1');
+            $table->index('updated_at', 'items_updated_at_idx1');
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('items');
+    }
+};
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('order_statuses', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+
+            // Indexes
+            $table->index('name', 'order_statuses_name_idx1');
+            $table->index('created_at', 'order_statuses_created_at_idx1');
+            $table->index('updated_at', 'order_statuses_updated_at_idx1');
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('order_statuses');
+    }
+};
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('orders', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('business_id')->constrained('businesses')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('order_status_id')->constrained('order_statuses')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('status');
+            $table->timestamps();
+
+            // Indexes
+            $table->index('status', 'orders_status_idx1');
+            $table->index('created_at', 'orders_created_at_idx1');
+            $table->index('updated_at', 'orders_updated_at_idx1');
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('orders');
+    }
+};
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('order_items', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('order_id')->constrained('orders')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('item_id')->constrained('items')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->decimal('amount', 10, 2);
+            $table->integer('quantity');
+            $table->decimal('total_amount', 10, 2)->storedAs('amount * quantity');
+            $table->timestamps();
+
+            // Indexes
+            $table->index('amount', 'order_items_amount_idx1');
+            $table->index('quantity', 'order_items_quantity_idx1');
+            $table->index('total_amount', 'order_items_total_amount_idx1');
+            $table->index('created_at', 'order_items_created_at_idx1');
+            $table->index('updated_at', 'order_items_updated_at_idx1');
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('order_items');
+    }
+};
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('invoices', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('order_id')->constrained('orders')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->decimal('amount', 10, 2);
+            $table->decimal('discount', 10, 2);
+            $table->decimal('discount_amount', 10, 2)->storedAs('`amount` * `discount`');
+            $table->decimal('actual_amount', 10, 2)->storedAs('`amount` - `discount_amount`');
+            $table->enum('status', ['fully paid', 'partly paid', 'unpaid'])->default('unpaid');
+            $table->boolean('smsed')->default(false);
+            $table->timestamps();
+
+            // Indexes
+            $table->index('amount', 'invoices_amount_idx1');
+            $table->index('discount_amount', 'invoices_discount_amount_idx1');
+            $table->index('discount', 'invoices_discount_idx1');
+            $table->index('actual_amount', 'invoices_actual_amount_idx1');
+            $table->index('status', 'invoices_status_idx1');
+            $table->index('created_at', 'invoices_created_at_idx1');
+            $table->index('updated_at', 'invoices_updated_at_idx1');
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('invoices');
+    }
+};
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('invoice_payments', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('invoice_id')->constrained('invoices')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->decimal('amount', 10, 2);
+            $table->enum('method', ['Cash', 'MoMo', 'Card']);
+            $table->enum('status', ['fully paid', 'partly paid']);
+            $table->timestamps();
+
+            // Indexes
+            $table->index('amount', 'invoice_payments_amount_idx1');
+            $table->index('method', 'invoice_payments_method_idx1');
+            $table->index('status', 'invoice_payments_status_idx1');
+            $table->index('created_at', 'invoice_payments_created_at_idx1');
+            $table->index('updated_at', 'invoice_payments_updated_at_idx1');
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('invoice_payments');
+    }
+};
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('delivery_requests', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('order_id')->constrained('orders')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('business_id')->constrained('businesses')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('location', 255);
+            $table->decimal('latitude', 9, 6);
+            $table->decimal('longitude', 9, 6);
+            $table->date('date');
+            $table->time('time');
+            $table->decimal('amount', 10, 2);
+            $table->text('note')->nullable();
+            $table->enum('status', ['pending', 'accepted', 'in-progress', 'completed', 'cancelled'])->default('pending');
+            $table->timestamps();
+
+            // Indexes
+            $table->index('status', 'delivery_requests_status_idx1');
+            $table->index('created_at', 'delivery_requests_created_at_idx1');
+            $table->index('updated_at', 'delivery_requests_updated_at_idx1');
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('delivery_requests');
+    }
+};
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('delivery_request_payments', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('request_id');
+            $table->decimal('amount', 10, 2);
+            $table->enum('method', ['Cash', 'MoMo', 'Card']);
+            $table->enum('status', ['paid', 'unpaid']);
+            $table->timestamps();
+
+            // Foreign key constraint
+            $table->foreign('request_id')->references('id')->on('delivery_requests')->onDelete('cascade')->onUpdate('cascade');
+
+            // Indexes
+            $table->index('amount', 'delivery_request_payments_amount_idx1');
+            $table->index('method', 'delivery_request_payments_method_idx1');
+            $table->index('status', 'delivery_request_payments_status_idx1');
+            $table->index('created_at', 'delivery_request_payments_created_at_idx1');
+            $table->index('updated_at', 'delivery_request_payments_updated_at_idx1');
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('delivery_request_payments');
+    }
+};
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('delivery_requests_driver_assignments', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('driver_id')->constrained('drivers')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('request_id')->constrained('delivery_requests')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->enum('status', ['in-progress', 'completed', 'cancelled'])->default('in-progress');
+            $table->timestamps();
+
+            // Indexes
+            $table->index('status', 'delivery_requests_assignments_status_idx1');
+            $table->index('created_at', 'delivery_requests_assignments_created_at_idx1');
+            $table->index('updated_at', 'delivery_requests_assignments_updated_at_idx1');
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('delivery_requests_driver_assignments');
+    }
+};
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('notification_templates', function (Blueprint $table) {
+            $table->id();
+            $table->enum('category', ['pickup', 'delivery', 'payment', 'promotion', 'rating', 'general']);
+            $table->enum('medium', ['sms', 'email'])->default('sms');
+            $table->string('title', 255);
+            $table->text('message');
+            $table->timestamps();
+
+            $table->index('type');
+            $table->index('title');
+            $table->index('created_at');
+            $table->index('updated_at');
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('notification_templates');
+    }
+};
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('service_ratings', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('business_id')->constrained('businesses')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->integer('rating');
+            $table->text('comment')->nullable();
+            $table->timestamps();
+
+            // Indexes
+            $table->index('rating');
+            $table->index('created_at');
+            $table->index('updated_at');
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('service_ratings');
+    }
+};

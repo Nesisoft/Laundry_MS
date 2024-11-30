@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('pickup_request_driver_assignments', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('driver_id')->constrained('drivers')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('request_id')->constrained('pickup_requests')->cascadeOnDelete()->cascadeOnUpdate();
             $table->enum('status', ['in-progress', 'completed', 'cancelled'])->default('in-progress');

@@ -1,0 +1,31 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('notifications', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('notification_template_id')->constrained('notification_templates')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->enum('type', ['sms', 'email'])->default('sms');
+            $table->enum('to', ['all', 'specific'])->default('all');
+            $table->unsignedBigInteger('customer_id')->nullable();
+            $table->foreign('customer_id')->references('id')->on('customeres')->onDelete('set null')->onUpdate('cascade');
+            $table->text('message');
+
+            // Define indexes
+            $table->index('type', 'notifications_type_idx1');
+            $table->index('to', 'notifications_to_idx1');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('notifications');
+    }
+};
