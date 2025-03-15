@@ -1,14 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\V1\AuthController;
-
-Route::get('/csrf-token', [AuthController::class, 'generateCsrfToken']);
-
-Route::post('/email-verification-request', [AuthController::class, 'emailVerificationRequest']);
-Route::post('/email-verification', [AuthController::class, 'verifyEmailCode']);
-Route::post('/sms-verification-request', [AuthController::class, 'smsVerificationRequest']);
-Route::post('/sms-verification', [AuthController::class, 'verifySMSCode']);
+use App\Http\Controllers\AuthController;
 
 Route::prefix('/{userType}')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
