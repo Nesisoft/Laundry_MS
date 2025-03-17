@@ -15,6 +15,11 @@ class Address extends Model
         'latitude', 'longitude'
     ];
 
+    public function addressable()
+    {
+        return $this->morphTo();
+    }
+
     public function businesses(): HasMany
     {
         return $this->hasMany(Business::class);

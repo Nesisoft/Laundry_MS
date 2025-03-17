@@ -12,12 +12,12 @@ class Business extends Model
     use HasFactory;
 
     protected $fillable = [
-        'address_id', 'access_token', 'name', 'phone', 'email', 'logo', 'banner', 'motto'
+        'address_id', 'access_token', 'mode', 'name', 'phone', 'email', 'logo', 'banner', 'motto'
     ];
 
-    public function address(): BelongsTo
+    public function address()
     {
-        return $this->belongsTo(Address::class);
+        return $this->morphOne(Address::class, 'addressable');
     }
 
     public function users(): HasMany

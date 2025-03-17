@@ -17,6 +17,11 @@ class Driver extends Model
         'full_name', 'sex'
     ];
 
+    public function address()
+    {
+        return $this->morphOne(Address::class, 'addressable');
+    }
+
     public function business(): BelongsTo
     {
         return $this->belongsTo(Business::class);
@@ -30,11 +35,6 @@ class Driver extends Model
     public function vehicle(): BelongsTo
     {
         return $this->belongsTo(Vehicle::class);
-    }
-
-    public function address(): BelongsTo
-    {
-        return $this->belongsTo(Address::class);
     }
 
     public function pickupRequestAssignments(): HasMany

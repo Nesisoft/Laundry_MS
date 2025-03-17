@@ -15,7 +15,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
-        'business_id', 'type', 'email', 'username', 'password', 'email_verified_at'
+        'business_id', 'role', 'email', 'username', 'password', 'email_verified_at'
     ];
 
     protected $hidden = [
@@ -34,11 +34,6 @@ class User extends Authenticatable
     public function business(): BelongsTo
     {
         return $this->belongsTo(Business::class);
-    }
-
-    public function role(): BelongsTo
-    {
-        return $this->belongsTo(Role::class);
     }
 
     public function services(): HasMany
@@ -83,7 +78,7 @@ class User extends Authenticatable
 
     public function hasRole($role): bool
     {
-        return $this->role->name === $role;
+        return $this->role === $role;
     }
 
     public function isAdmin(): bool
@@ -96,8 +91,18 @@ class User extends Authenticatable
         return $this->hasRole('manager');
     }
 
-    public function isStaff(): bool
+    public function isEmployee(): bool
     {
-        return $this->hasRole('staff');
+        return $this->hasRole('employee');
+    }
+
+    public function isDriver(): bool
+    {
+        return $this->hasRole('driver');
+    }
+
+    public function isCustomer(): bool
+    {
+        return $this->hasRole('customer');
     }
 }

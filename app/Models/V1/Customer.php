@@ -17,6 +17,11 @@ class Customer extends Model
         'full_name', 'sex'
     ];
 
+    public function address()
+    {
+        return $this->morphOne(Address::class, 'addressable');
+    }
+
     public function business(): BelongsTo
     {
         return $this->belongsTo(Business::class);
@@ -25,11 +30,6 @@ class Customer extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function address(): BelongsTo
-    {
-        return $this->belongsTo(Address::class);
     }
 
     public function customerDiscounts(): HasMany

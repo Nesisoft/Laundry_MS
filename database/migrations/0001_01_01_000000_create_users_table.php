@@ -12,8 +12,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('business_id')->nullable();
             $table->foreign('business_id')->references('id')->on('businesses')->onDelete('cascade')->onUpdate('cascade');
-            $table->enum('type', ['admin', 'manager', 'user'])->default('manager');
-            $table->foreignId('role_id')->constrained('roles')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->enum('role', ['admin', 'manager', 'employee', 'customer'])->default('customer');
             $table->string('email')->unique();
             $table->string('username')->unique();
             $table->string('password');
@@ -21,7 +20,7 @@ return new class extends Migration
             $table->timestamps();
 
             // Indexes
-            $table->index('type', 'users_type_idx1');
+            $table->index('role', 'users_role_idx1');
             $table->index('email', 'users_email_idx1');
             $table->index('username', 'users_username_idx1');
             $table->index('password', 'users_password_idx1');
