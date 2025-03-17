@@ -10,9 +10,7 @@ return new class extends Migration
     {
         Schema::create('businesses', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('address_id')->nullable();
-            $table->foreign('address_id')->references('id')->on('addresses')->onDelete('set null')->onUpdate('cascade');
-            $table->string('access_token', 255)->unique('businesses_access_token');
+            $table->string('access_token', 255)->unique('unique_businesses_access_token');
             $table->string('name', 255);
             $table->enum('mode', ['live', 'local'])->default('live');
             $table->string('phone', 20)->nullable();

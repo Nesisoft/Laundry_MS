@@ -10,10 +10,11 @@ return new class extends Migration
     {
         Schema::create('vehicles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('business_id')->constrained('businesses')->cascadeOnDelete()->cascadeOnUpdate();
+            // $table->foreignId('business_id')->constrained('businesses')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('branch_id')->constrained('branches')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('number', 255)->unique();
-            $table->enum('type', ['car', 'motorcycle'])->default('car');
+            $table->enum('type', ['car', 'motorcycle', 'bicycle'])->default('car');
             $table->string('model', 255)->nullable();
             $table->string('year', 255)->nullable();
             $table->timestamps();
