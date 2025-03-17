@@ -2,34 +2,33 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
         Schema::create('order_statuses', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->foreignId('order_id')->constrained('orders')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('status');
             $table->timestamps();
 
             // Indexes
-            $table->index('name', 'order_statuses_name_idx1');
+            $table->index('status', 'order_statuses_status_idx1');
             $table->index('created_at', 'order_statuses_created_at_idx1');
             $table->index('updated_at', 'order_statuses_updated_at_idx1');
+            $table->timestamps();
         });
-
-        // Insert default values
-        DB::table('order_statuses')->insert([
-            ['name' => 'ready for washing'],
-            ['name' => 'ready for ironing'],
-            ['name' => 'ready for pickup'],
-            ['name' => 'ready for delivery']
-        ]);
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
         Schema::dropIfExists('order_statuses');
     }
