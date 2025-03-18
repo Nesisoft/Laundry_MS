@@ -6,22 +6,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CustomerDiscount extends Model
+class Employee extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'discount_id', 'customer_id'
+        'branch_id', 'user_id', 'address_id', 'email', 
+        'phone_number', 'first_name', 'last_name', 'sex'
     ];
 
-    public function discount(): BelongsTo
+    public function address()
     {
-        return $this->belongsTo(Discount::class);
+        return $this->morphOne(Address::class, 'addressable');
     }
 
-    public function customer(): BelongsTo
+    public function branch(): BelongsTo
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Branch::class);
     }
 
     public function user(): BelongsTo

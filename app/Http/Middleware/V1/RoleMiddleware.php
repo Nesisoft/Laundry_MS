@@ -1,29 +1,22 @@
 <?php
 
-namespace App\Http\Middleware\V1;
+namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next, string $role): Response
+    /**
+     * Handle the request and check if the user has the required role.
+     */
+    public function handle(Request $request, Closure $next, ...$roles)
     {
-        if (!auth()->check()) {
-            return response()->json([
-                'status' => 'error', 
-                'message' => 'Unauthorized'
-            ], 401);
+        if (!Auth::check() || !in_array(Auth::user()->role, $roles)) {
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        if (auth()->user()->hasRole($role)) {
-            return $next($request);
-        }
-
-        return response()->json([
-            'status' => 'error', 
-            'message' => 'Access denied'
-        ], 403);
+        return $next($request);
     }
 }

@@ -21,7 +21,6 @@ return new class extends Migration
             $table->index('status', 'order_statuses_status_idx1');
             $table->index('created_at', 'order_statuses_created_at_idx1');
             $table->index('updated_at', 'order_statuses_updated_at_idx1');
-            $table->timestamps();
         });
     }
 

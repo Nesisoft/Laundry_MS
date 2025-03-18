@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\V1;
+namespace App\Models;
 
 use App\Models\Branch;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +13,7 @@ class DeliveryRequest extends Model
     use HasFactory;
 
     protected $fillable = [
-        'order_id', 'business_id', 'customer_id', 'user_id',
+        'order_id', 'branch_id', 'customer_id', 'user_id',
         'location', 'latitude', 'longitude', 'date', 'time', 
         'amount', 'note', 'status'
     ];
@@ -22,11 +22,6 @@ class DeliveryRequest extends Model
     {
         return $this->belongsTo(Order::class);
     }
-
-    // public function business(): BelongsTo
-    // {
-    //     return $this->belongsTo(Business::class);
-    // }
 
     public function branch(): BelongsTo
     {

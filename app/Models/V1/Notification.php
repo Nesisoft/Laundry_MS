@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\V1;
+namespace App\Models;
 
 use App\Models\Branch;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,11 +12,6 @@ class Notification extends Model
     use HasFactory;
 
     protected $fillable = ['type', 'to', 'message'];
-
-    // public function business(): BelongsTo
-    // {
-    //     return $this->belongsTo(Business::class);
-    // }
 
     public function branch(): BelongsTo
     {

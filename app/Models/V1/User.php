@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\V1;
+namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,7 +15,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
-        'business_id', 'role', 'email', 'username', 'password', 'email_verified_at'
+        'branch_id', 'role', 'email', 'username', 'password', 'email_verified_at'
     ];
 
     protected $hidden = [

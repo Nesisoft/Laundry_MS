@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\V1;
+namespace App\Models;
 
 use App\Models\Branch;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,23 +13,13 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'business_id', 'customer_id', 'order_status_id', 'status'
+        'branch_id', 'customer_id', 'order_status_id', 'status'
     ];
-
-    // public function business(): BelongsTo
-    // {
-    //     return $this->belongsTo(Business::class);
-    // }
 
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);
     }
-
-    // public function user(): BelongsTo
-    // {
-    //     return $this->belongsTo(User::class);
-    // }
 
     public function customer(): BelongsTo
     {

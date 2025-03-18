@@ -18,16 +18,7 @@ return new class extends Migration
             $table->index('name');
             $table->index('created_at');
             $table->index('updated_at');
-
-            // Define foreign key
         });
-
-        // Insert initial data
-        DB::table('services')->insert([
-            ['name' => 'Wash only'],
-            ['name' => 'Iron only'],
-            ['name' => 'Wash and Iron']
-        ]);
     }
 
     public function down(): void

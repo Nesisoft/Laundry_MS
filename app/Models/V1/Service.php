@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\V1;
+namespace App\Models;
 
 use App\Models\Branch;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,13 +13,8 @@ class Service extends Model
     use HasFactory;
 
     protected $fillable = [
-        'business_id', 'user_id', 'name', 'description'
+        'branch_id', 'user_id', 'name', 'description'
     ];
-
-    // public function business(): BelongsTo
-    // {
-    //     return $this->belongsTo(Business::class);
-    // }
 
     public function branch(): BelongsTo
     {

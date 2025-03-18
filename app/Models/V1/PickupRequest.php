@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\V1;
+namespace App\Models;
 
 use App\Models\Branch;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,15 +13,10 @@ class PickupRequest extends Model
     use HasFactory;
 
     protected $fillable = [
-        'business_id', 'customer_id', 'service_id', 'user_id',
+        'branch_id', 'customer_id', 'service_id', 'user_id',
         'location', 'latitude', 'longitude', 'date', 'time', 
         'amount', 'note', 'status'
     ];
-
-    // public function business(): BelongsTo
-    // {
-    //     return $this->belongsTo(Business::class);
-    // }
 
     public function branch(): BelongsTo
     {

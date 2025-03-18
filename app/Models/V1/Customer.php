@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\V1;
+namespace App\Models;
 
 use App\Models\Branch;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,20 +13,14 @@ class Customer extends Model
     use HasFactory;
 
     protected $fillable = [
-        'business_id', 'user_id', 'address_id', 'email', 
-        'phone_number', 'first_name', 'last_name', 
-        'full_name', 'sex'
+        'branch_id', 'user_id', 'address_id', 'email', 
+        'phone_number', 'first_name', 'last_name', 'sex'
     ];
 
     public function address()
     {
         return $this->morphOne(Address::class, 'addressable');
     }
-
-    // public function business(): BelongsTo
-    // {
-    //     return $this->belongsTo(Business::class);
-    // }
 
     public function branch(): BelongsTo
     {

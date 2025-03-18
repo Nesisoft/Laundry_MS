@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\V1;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +11,7 @@ class ServiceRating extends Model
     use HasFactory;
 
     protected $fillable = [
-        'customer_id', 'business_id', 'rating', 'comment'
+        'customer_id', 'branch_id', 'rating', 'comment'
     ];
 
     public function customer(): BelongsTo
