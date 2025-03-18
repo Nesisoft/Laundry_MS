@@ -14,7 +14,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'access_token' => 'required|string|min:16|max:16|exists:businesses,access_token',
         ]);
-        
+
         if ($validator->fails()) {
             Log::info("Access token verification failed");
             return response()->json([
@@ -22,6 +22,6 @@ class AuthController extends Controller
                 'data' => $validator->errors()
             ], 422);
         }
-        
+
     }
 }

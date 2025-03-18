@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\V1;
+namespace App\Models;
 
 use App\Models\Branch;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +13,7 @@ class Vehicle extends Model
     use HasFactory;
 
     protected $fillable = [
-        'business_id', 'user_id', 'number', 'type', 
+        'business_id', 'user_id', 'number', 'type',
         'model', 'year'
     ];
 

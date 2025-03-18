@@ -2,18 +2,18 @@
 
 namespace App\Models;
 
-use App\Models\V1\Address;
-use App\Models\V1\Customer;
-use App\Models\V1\DeliveryRequest;
-use App\Models\V1\Discount;
-use App\Models\V1\Driver;
-use App\Models\V1\Item;
-use App\Models\V1\Order;
-use App\Models\V1\PickupRequest;
-use App\Models\V1\Service;
-use App\Models\V1\ServiceRating;
-use App\Models\V1\User;
-use App\Models\V1\Vehicle;
+use App\Models\Address;
+use App\Models\Customer;
+use App\Models\DeliveryRequest;
+use App\Models\Discount;
+use App\Models\Driver;
+use App\Models\Item;
+use App\Models\Order;
+use App\Models\PickupRequest;
+use App\Models\Service;
+use App\Models\ServiceRating;
+use App\Models\User;
+use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 

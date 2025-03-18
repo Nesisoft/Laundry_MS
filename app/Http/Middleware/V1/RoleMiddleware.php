@@ -12,7 +12,7 @@ class RoleMiddleware
     {
         if (!auth()->check()) {
             return response()->json([
-                'status' => 'error', 
+                'status' => 'error',
                 'message' => 'Unauthorized'
             ], 401);
         }
@@ -22,7 +22,7 @@ class RoleMiddleware
         }
 
         return response()->json([
-            'status' => 'error', 
+            'status' => 'error',
             'message' => 'Access denied'
         ], 403);
     }
