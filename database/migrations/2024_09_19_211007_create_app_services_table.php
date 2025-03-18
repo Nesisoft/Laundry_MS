@@ -19,6 +19,14 @@ return new class extends Migration
             $table->index('created_at', 'app_services_created_at_idx1');
             $table->index('updated_at', 'app_services_updated_at_idx1');
         });
+
+        // Insert initial data
+        DB::table('app_services')->insert([
+            ['name' => 'Wash only'],
+            ['name' => 'Iron only'],
+            ['name' => 'Wash and Iron'],
+            ['name' => 'Wash, Iron and Fold']
+        ]);
     }
 
     public function down(): void

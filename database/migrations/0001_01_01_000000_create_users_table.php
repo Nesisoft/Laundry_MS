@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('branch_id')->nullable();
             $table->foreign('branch_id')->references('id')->on('branches')->onDelete('cascade')->onUpdate('cascade');
-            $table->enum('role', ['admin', 'manager', 'employee', 'customer'])->default('customer');
+            $table->string('role')->default('customer');
             $table->string('email')->unique();
             $table->string('username')->unique();
             $table->string('password');

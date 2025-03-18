@@ -6,15 +6,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
-        Schema::create('drivers', function (Blueprint $table) {
+        Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->foreignId('branch_id')->constrained('branches')->cascadeOnDelete()->cascadeOnUpdate();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('vehicle_id')->nullable();
-            $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('address_id')->nullable();
             $table->foreign('address_id')->references('id')->on('addresses')->onDelete('cascade')->onUpdate('cascade');
             $table->string('email', 255)->nullable();
@@ -22,23 +23,28 @@ return new class extends Migration
             $table->string('first_name', 255);
             $table->string('last_name', 255);
             $table->string('full_name', 255)->nullable();
+            $table->string('position', 255)->nullable();
+            $table->decimal('salary')->nullable();
             $table->enum('sex', ['male', 'female'])->default('male');
             $table->timestamps();
 
             // Indexes
-            $table->index('email', 'drivers_email_idx1');
-            $table->index('phone_number', 'drivers_phone_number_idx1');
-            $table->index('first_name', 'drivers_first_name_idx1');
-            $table->index('last_name', 'drivers_last_name_idx1');
-            $table->index('full_name', 'drivers_full_name_idx1');
-            $table->index('sex', 'drivers_sex_idx1');
-            $table->index('created_at', 'drivers_created_at_idx1');
-            $table->index('updated_at', 'drivers_updated_at_idx1');
+            $table->index('email', 'employees_email_idx1');
+            $table->index('phone_number', 'employees_phone_number_idx1');
+            $table->index('first_name', 'employees_first_name_idx1');
+            $table->index('last_name', 'employees_last_name_idx1');
+            $table->index('full_name', 'employees_full_name_idx1');
+            $table->index('sex', 'employees_sex_idx1');
+            $table->index('created_at', 'employees_created_at_idx1');
+            $table->index('updated_at', 'employees_updated_at_idx1');
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        Schema::dropIfExists('drivers');
+        Schema::dropIfExists('employees');
     }
 };
