@@ -10,7 +10,6 @@ return new class extends Migration
     {
         Schema::create('pickup_requests', function (Blueprint $table) {
             $table->id();
-            // $table->foreignId('business_id')->constrained('businesses')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('branch_id')->constrained('branches')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('service_id')->constrained('services')->cascadeOnDelete()->cascadeOnUpdate();

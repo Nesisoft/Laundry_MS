@@ -9,29 +9,20 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('services', function (Blueprint $table) {
+        Schema::create('app_services', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
             $table->timestamps();
 
-            $table->index('name');
-            $table->index('created_at');
-            $table->index('updated_at');
-
-            // Define foreign key
+            $table->index('name', 'app_services_name_idx1');
+            $table->index('created_at', 'app_services_created_at_idx1');
+            $table->index('updated_at', 'app_services_updated_at_idx1');
         });
-
-        // Insert initial data
-        DB::table('services')->insert([
-            ['name' => 'Wash only'],
-            ['name' => 'Iron only'],
-            ['name' => 'Wash and Iron']
-        ]);
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('services');
+        Schema::dropIfExists('app_services');
     }
 };
