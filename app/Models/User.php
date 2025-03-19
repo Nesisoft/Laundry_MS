@@ -15,7 +15,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
-        'branch_id', 'role', 'email', 'username', 'password', 'email_verified_at'
+        'role', 'email', 'password', 'email_verified_at'
     ];
 
     protected $hidden = [
@@ -29,11 +29,6 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-
-    public function business(): BelongsTo
-    {
-        return $this->belongsTo(Business::class);
     }
 
     public function services(): HasMany
@@ -54,6 +49,16 @@ class User extends Authenticatable
     public function customers(): HasMany
     {
         return $this->hasMany(Customer::class);
+    }
+
+    public function managers(): HasMany
+    {
+        return $this->hasMany(Manager::class);
+    }
+
+    public function admins(): HasMany
+    {
+        return $this->hasMany(Admin::class);
     }
 
     public function discounts(): HasMany

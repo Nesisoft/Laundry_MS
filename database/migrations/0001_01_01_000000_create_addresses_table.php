@@ -13,10 +13,14 @@ return new class extends Migration
             $table->string('street')->nullable();
             $table->string('city')->nullable();
             $table->string('state')->nullable();
-            $table->string('zip_code', 20)->nullable();
+            $table->string('zip_code')->nullable();
             $table->string('country')->nullable();
-            $table->decimal('latitude', 9, 6)->nullable();
-            $table->decimal('longitude', 9, 6)->nullable();
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
+
+            // Polymorphic relationship columns
+            $table->unsignedBigInteger('addressable_id')->nullable();
+            $table->string('addressable_type')->nullable();
             $table->timestamps();
 
             // Add indexes

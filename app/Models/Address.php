@@ -11,8 +11,7 @@ class Address extends Model
     use HasFactory;
 
     protected $fillable = [
-        'street', 'city', 'state', 'zip_code', 'country',
-        'latitude', 'longitude'
+        'street', 'city', 'state', 'zip_code', 'country', 'latitude', 'longitude'
     ];
 
     public function addressable()
@@ -33,5 +32,10 @@ class Address extends Model
     public function customers(): HasMany
     {
         return $this->hasMany(Customer::class);
+    }
+
+    public function admins(): HasMany
+    {
+        return $this->hasMany(Admin::class);
     }
 }

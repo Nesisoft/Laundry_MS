@@ -31,7 +31,7 @@ return [
             'provider' => 'users',
         ],
 
-        'sanctum' => [  // Added API authentication guard
+        'api' => [  // Added API authentication guard
             'driver' => 'sanctum',
             'provider' => 'users',
         ],

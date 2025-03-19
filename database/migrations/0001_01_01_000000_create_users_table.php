@@ -10,11 +10,8 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('branch_id')->nullable();
-            $table->foreign('branch_id')->references('id')->on('branches')->onDelete('cascade')->onUpdate('cascade');
             $table->string('role')->default('customer');
             $table->string('email')->unique();
-            $table->string('username')->unique();
             $table->string('password');
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
@@ -22,7 +19,6 @@ return new class extends Migration
             // Indexes
             $table->index('role', 'users_role_idx1');
             $table->index('email', 'users_email_idx1');
-            $table->index('username', 'users_username_idx1');
             $table->index('password', 'users_password_idx1');
             $table->index('created_at', 'users_created_at_idx1');
             $table->index('updated_at', 'users_updated_at_idx1');

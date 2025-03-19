@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address;
+use App\Models\Admin;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,11 +38,68 @@ class AuthController extends Controller
     }
 
     /**
+     * Register a new admin with address
+     */
+    public function register(Request $request): JsonResponse
+    {
+        // Validate User Data & Address Data
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6',
+            'phone_number' => 'required|string|max:20',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'sex' => 'required|in:male,female',
+            'address' => 'required|array',
+            'address.street' => 'required|string|max:255',
+            'address.city' => 'required|string|max:255',
+            'address.state' => 'required|string|max:255',
+            'address.zip_code' => 'nullable|string|max:20',
+            'address.country' => 'required|string|max:100',
+            'address.latitude' => 'nullable|numeric',
+            'address.longitude' => 'nullable|numeric'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // Create user with admin role
+        $user = User::create([
+            'role' => 'admin',
+            'email' => $request->email,
+            'username' => $request->username,
+            'password' => Hash::make($request->password),
+        ]);
+
+        // Create the address and associate it with the admin
+        $address = new Address($request->address);
+        $user->admin()->save($address); // This attaches the address to the admin polymorphically
+
+        // Create admin profile
+        $admin = Admin::create([
+            'user_id' => $user->id,
+            'address_id' => $address->id,
+            'phone_number' => $request->phone_number,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'sex' => $request->sex,
+        ]);
+
+        return response()->json([
+            'message' => 'Admin registered successfully',
+            'data' => $user
+        ], 201);
+    }
+
+    /**
      * Admin Login
      */
     public function login(Request $request, string $role): JsonResponse
     {
-        return response()->json($request);
         // Validate login input
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
@@ -69,9 +128,11 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Logged in successfully',
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-            'user' => $user
+            'data' => [
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                'user' => $user,
+            ]
         ]);
     }
 

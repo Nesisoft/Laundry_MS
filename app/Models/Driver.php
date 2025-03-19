@@ -13,8 +13,7 @@ class Driver extends Model
     use HasFactory;
 
     protected $fillable = [
-        'branch_id', 'user_id', 'vehicle_id', 'address_id',
-        'email', 'phone_number', 'first_name', 'last_name', 'sex'
+        'branch_id', 'user_id', 'vehicle_id', 'address_id', 'phone_number', 'first_name', 'last_name', 'sex'
     ];
 
     public function address()

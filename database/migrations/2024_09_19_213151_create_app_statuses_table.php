@@ -9,19 +9,20 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('available_order_statuses', function (Blueprint $table) {
+        Schema::create('app_statuses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('image')->nullable();
             $table->timestamps();
 
             // Indexes
-            $table->index('name', 'available_order_statuses_name_idx1');
-            $table->index('created_at', 'available_order_statuses_created_at_idx1');
-            $table->index('updated_at', 'available_order_statuses_updated_at_idx1');
+            $table->index('name', 'app_statuses_name_idx1');
+            $table->index('created_at', 'app_statuses_created_at_idx1');
+            $table->index('updated_at', 'app_statuses_updated_at_idx1');
         });
 
         // Insert default values
-        DB::table('available_order_statuses')->insert([
+        DB::table('app_statuses')->insert([
             ['name' => 'ready for washing'],
             ['name' => 'ready for ironing'],
             ['name' => 'ready for pickup'],
@@ -31,6 +32,6 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('available_order_statuses');
+        Schema::dropIfExists('app_statuses');
     }
 };
