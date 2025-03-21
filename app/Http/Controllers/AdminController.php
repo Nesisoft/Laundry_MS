@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Address;
-use App\Models\Admin;
+use App\Models\Employee;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,29 +14,6 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
-    /**
-     * Verify Access Token
-     */
-    public function VerifyAccessToken(Request $request): JsonResponse
-    {
-        $validator = Validator::make($request->all(), [
-            'access_token' => 'required|string|min:16|max:16|exists:businesses,access_token',
-        ]);
-
-        if ($validator->fails()) {
-            Log::info("Access token verification failed");
-            return response()->json([
-                'message' => 'Access token verification failed',
-                'data' => $validator->errors()
-            ], 422);
-        }
-
-        return response()->json([
-            'message' => 'Access token verified successfully',
-            'data' => $validator->validated()
-        ], 200);
-    }
-
     /**
      * Register a new admin with address
      */
@@ -55,7 +32,7 @@ class AdminController extends Controller
 
         // Validate User Data & Address Data
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email|unique:users,email',
+            'email' => 'nullable|email|unique:users,email',
             'password' => 'required|string|min:6',
             'phone_number' => 'required|string|max:20',
             'first_name' => 'required|string|max:255',
@@ -80,16 +57,15 @@ class AdminController extends Controller
             ], 422);
         }
 
-        // Create user with admin role
-        $user = User::create([
-            'role' => 'admin',
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        // // Create user with admin role
+        // $user = User::create([
+        //     'role' => 'admin',
+        //     'email' => $request->email,
+        //     'password' => Hash::make($request->password),
+        // ]);
 
         // Create admin profile
-        $admin = Admin::create([
-            'user_id' => $user->id,
+        $employee = Employee::create([
             'phone_number' => $request->phone_number,
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
@@ -99,12 +75,12 @@ class AdminController extends Controller
         // Create address only if provided
         if ($request->has('address') && !empty($request->address)) {
             $address = new Address($request->address);
-            $admin->address()->save($address); // Attaches polymorphic relationship
+            $employee->address()->save($address); // Attaches polymorphic relationship
         }
 
         return response()->json([
             'message' => 'Admin registered successfully',
-            'data' => $user
+            'data' => $employee
         ], 201);
     }
 
