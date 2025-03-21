@@ -11,7 +11,7 @@ class CustomerDiscount extends Model
     use HasFactory;
 
     protected $fillable = [
-        'discount_id', 'customer_id'
+        'added_by', 'discount_id', 'customer_id'
     ];
 
     public function discount(): BelongsTo

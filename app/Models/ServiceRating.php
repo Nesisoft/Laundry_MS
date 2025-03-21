@@ -10,17 +10,10 @@ class ServiceRating extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'customer_id', 'branch_id', 'rating', 'comment'
-    ];
+    protected $fillalble = ['added_by', 'customer_id', 'ratings', 'comment'];
 
-    public function customer(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Customer::class);
-    }
-
-    public function business(): BelongsTo
-    {
-        return $this->belongsTo(Business::class);
+        return $this->belongsTo(User::class);
     }
 }

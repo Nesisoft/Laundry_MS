@@ -13,7 +13,7 @@ class DeliveryRequest extends Model
     use HasFactory;
 
     protected $fillable = [
-        'order_id', 'branch_id', 'customer_id', 'user_id',
+        'order_id', 'customer_id', 'user_id',
         'location', 'latitude', 'longitude', 'date', 'time',
         'amount', 'note', 'status'
     ];
@@ -21,11 +21,6 @@ class DeliveryRequest extends Model
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
-    }
-
-    public function branch(): BelongsTo
-    {
-        return $this->belongsTo(Branch::class);
     }
 
     public function customer(): BelongsTo

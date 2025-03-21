@@ -10,12 +10,13 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->unsignedBigInteger('added_by')->nullable();
+            $table->foreign('added_by')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('notification_template_id')->constrained('notification_templates')->cascadeOnDelete()->cascadeOnUpdate();
             $table->enum('type', ['sms', 'email'])->default('sms');
             $table->enum('to', ['all', 'specific'])->default('all');
             $table->unsignedBigInteger('customer_id')->nullable();
-            $table->foreign('customer_id')->references('id')->on('customeres')->onDelete('set null')->onUpdate('cascade');
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('set null')->onUpdate('cascade');
             $table->text('message');
 
             // Define indexes

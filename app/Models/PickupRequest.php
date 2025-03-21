@@ -13,15 +13,10 @@ class PickupRequest extends Model
     use HasFactory;
 
     protected $fillable = [
-        'branch_id', 'customer_id', 'service_id', 'user_id',
-        'location', 'latitude', 'longitude', 'date', 'time', 
+        'customer_id', 'service_id', 'added_by',
+        'location', 'latitude', 'longitude', 'date', 'time',
         'amount', 'note', 'status'
     ];
-
-    public function branch(): BelongsTo
-    {
-        return $this->belongsTo(Branch::class);
-    }
 
     public function customer(): BelongsTo
     {

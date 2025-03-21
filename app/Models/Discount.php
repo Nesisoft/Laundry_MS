@@ -13,14 +13,11 @@ class Discount extends Model
     use HasFactory;
 
     protected $fillable = [
-        'branch_id', 'user_id', 'discount_type',
+        'added_by', 'discount_type',
         'discount', 'description', 'expiration_date'
     ];
 
-    public function branch(): BelongsTo
-    {
-        return $this->belongsTo(Branch::class);
-    }
+
 
     public function user(): BelongsTo
     {

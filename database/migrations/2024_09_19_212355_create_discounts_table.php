@@ -10,18 +10,18 @@ return new class extends Migration
     {
         Schema::create('discounts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('branch_id')->constrained('branches')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->enum('discount_type', ['percentage', 'amount'])->default('percentage');
-            $table->decimal('discount', 10, 2);
+            $table->unsignedBigInteger('added_by')->nullable();
+            $table->foreign('added_by')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->enum('type', ['percentage', 'amount'])->default('percentage');
+            $table->decimal('value', 10, 2);
             $table->string('description')->nullable();
             $table->date('expiration_date')->nullable();
             $table->timestamps();
-            
-            
+
+
             $table->index('code', 'discounts_code_idx1');
-            $table->index('discount_type', 'discounts_discount_type_idx1');
-            $table->index('discount', 'discounts_discount_idx1');
+            $table->index('type', 'discounts_type_idx1');
+            $table->index('value', 'discounts_value_idx1');
             $table->index('expiration_date', 'discounts_expiration_date_idx1');
             $table->index('created_at', 'discounts_created_at_idx1');
             $table->index('updated_at', 'discounts_updated_at_idx1');

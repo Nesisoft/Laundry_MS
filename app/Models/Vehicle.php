@@ -13,21 +13,11 @@ class Vehicle extends Model
     use HasFactory;
 
     protected $fillable = [
-        'branch_id', 'user_id', 'number', 'type', 'model', 'year'
+        'added_by', 'number', 'type', 'model', 'year'
     ];
-
-    public function branch(): BelongsTo
-    {
-        return $this->belongsTo(Branch::class);
-    }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function drivers(): HasMany
-    {
-        return $this->hasMany(Driver::class);
     }
 }

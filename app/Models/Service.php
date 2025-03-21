@@ -13,13 +13,8 @@ class Service extends Model
     use HasFactory;
 
     protected $fillable = [
-        'branch_id', 'user_id', 'name', 'description'
+        'added_by', 'name', 'description'
     ];
-
-    public function branch(): BelongsTo
-    {
-        return $this->belongsTo(Branch::class);
-    }
 
     public function user(): BelongsTo
     {

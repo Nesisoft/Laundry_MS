@@ -13,11 +13,6 @@ class Notification extends Model
 
     protected $fillable = ['type', 'to', 'message'];
 
-    public function branch(): BelongsTo
-    {
-        return $this->belongsTo(Branch::class);
-    }
-
     public function customers(): BelongsTo
     {
         return $this->BelongsTo(Customer::class);

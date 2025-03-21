@@ -42,6 +42,17 @@ class AdminController extends Controller
      */
     public function register(Request $request): JsonResponse
     {
+        // Ensure the user is authenticated
+        $authUser = Auth::user();
+        if (!$authUser) {
+            return response()->json(['message' => 'Unauthorized. Please log in.'], 401);
+        }
+
+        // Ensure the authenticated user is an admin
+        if ($authUser->role !== 'admin') {
+            return response()->json(['message' => 'Access denied. Only admins can add new admins.'], 403);
+        }
+
         // Validate User Data & Address Data
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:users,email',
@@ -126,7 +137,7 @@ class AdminController extends Controller
         $user->tokens()->delete();
 
         // Create a new access token for the admin
-        $token = $user->createToken('admin-access-token')->plainTextToken;
+        $token = $user->createToken($request->device)->plainTextToken;
 
         return response()->json([
             'message' => 'Logged in successfully',

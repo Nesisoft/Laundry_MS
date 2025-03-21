@@ -31,6 +31,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function employees(): HasMany
+    {
+        return $this->hasMany(Employee::class);
+    }
+
     public function services(): HasMany
     {
         return $this->hasMany(Service::class);
@@ -41,24 +46,9 @@ class User extends Authenticatable
         return $this->hasMany(Vehicle::class);
     }
 
-    public function drivers(): HasMany
-    {
-        return $this->hasMany(Driver::class);
-    }
-
     public function customers(): HasMany
     {
         return $this->hasMany(Customer::class);
-    }
-
-    public function managers(): HasMany
-    {
-        return $this->hasMany(Manager::class);
-    }
-
-    public function admins(): HasMany
-    {
-        return $this->hasMany(Admin::class);
     }
 
     public function discounts(): HasMany
@@ -66,9 +56,9 @@ class User extends Authenticatable
         return $this->hasMany(Discount::class);
     }
 
-    public function items(): HasMany
+    public function customerDiscounts(): HasMany
     {
-        return $this->hasMany(Item::class);
+        return $this->hasMany(CustomerDiscount::class);
     }
 
     public function pickupRequests(): HasMany
@@ -76,38 +66,63 @@ class User extends Authenticatable
         return $this->hasMany(PickupRequest::class);
     }
 
+    public function pickupRequestPayment(): HasMany
+    {
+        return $this->hasMany(PickupRequest::class);
+    }
+
+    public function pickupRequestDriverAssignment(): HasMany
+    {
+        return $this->hasMany(PickupRequest::class);
+    }
+
+    public function items(): HasMany
+    {
+        return $this->hasMany(Item::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
+    public function invoicePayments(): HasMany
+    {
+        return $this->hasMany(InvoicePayment::class);
+    }
+
     public function deliveryRequests(): HasMany
     {
         return $this->hasMany(DeliveryRequest::class);
     }
 
-    public function hasRole($role): bool
+    public function deliveryRequestPayment(): HasMany
     {
-        return $this->role === $role;
+        return $this->hasMany(DeliveryRequest::class);
     }
 
-    public function isAdmin(): bool
+    public function deliveryRequestDriverAssignment(): HasMany
     {
-        return $this->hasRole('admin');
+        return $this->hasMany(DeliveryRequest::class);
     }
 
-    public function isManager(): bool
+    public function notifications(): HasMany
     {
-        return $this->hasRole('manager');
+        return $this->hasMany(Notification::class);
     }
 
-    public function isEmployee(): bool
+    public function serviceRatings(): HasMany
     {
-        return $this->hasRole('employee');
-    }
-
-    public function isDriver(): bool
-    {
-        return $this->hasRole('driver');
-    }
-
-    public function isCustomer(): bool
-    {
-        return $this->hasRole('customer');
+        return $this->hasMany(ServiceRating::class);
     }
 }

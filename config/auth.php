@@ -2,28 +2,10 @@
 
 return [
 
-    /*
-    |--------------------------------------------------------------------------
-    | Authentication Defaults
-    |--------------------------------------------------------------------------
-    |
-    | Defines the default authentication guard and password reset broker.
-    |
-    */
-
     'defaults' => [
-        'guard' => env('AUTH_GUARD', 'sanctum'),  // Set default to API guard
+        'guard' => env('AUTH_GUARD', 'sanctum'),
         'passwords' => 'users',
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Authentication Guards
-    |--------------------------------------------------------------------------
-    |
-    | Defines session-based and token-based authentication guards.
-    |
-    */
 
     'guards' => [
         'web' => [
@@ -31,36 +13,18 @@ return [
             'provider' => 'users',
         ],
 
-        'api' => [  // Added API authentication guard
+        'api' => [
             'driver' => 'sanctum',
             'provider' => 'users',
         ],
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | User Providers
-    |--------------------------------------------------------------------------
-    |
-    | Defines how users are retrieved from the database.
-    |
-    */
-
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class, // Remove `env()` and define directly
+            'model' => App\Models\User::class,
         ],
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Resetting Passwords
-    |--------------------------------------------------------------------------
-    |
-    | Configuration for password reset tokens and expiration.
-    |
-    */
 
     'passwords' => [
         'users' => [
@@ -70,15 +34,6 @@ return [
             'throttle' => 60,
         ],
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Password Confirmation Timeout
-    |--------------------------------------------------------------------------
-    |
-    | Defines the time before users must re-enter their password.
-    |
-    */
 
     'password_timeout' => 10800,
 

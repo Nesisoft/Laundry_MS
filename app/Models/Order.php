@@ -13,13 +13,8 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'branch_id', 'customer_id', 'order_status_id', 'status'
+        'customer_id', 'order_status_id', 'status'
     ];
-
-    public function branch(): BelongsTo
-    {
-        return $this->belongsTo(Branch::class);
-    }
 
     public function customer(): BelongsTo
     {

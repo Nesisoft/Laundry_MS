@@ -10,26 +10,14 @@ return new class extends Migration
     {
         Schema::create('drivers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('branch_id')->constrained('branches')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('added_by')->nullable();
+            $table->foreign('added_by')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete()->cascadeOnUpdate();
             $table->unsignedBigInteger('vehicle_id')->nullable();
             $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('address_id')->nullable();
-            $table->foreign('address_id')->references('id')->on('addresses')->onDelete('cascade')->onUpdate('cascade');
-            $table->string('phone_number', 20);
-            $table->string('first_name', 255);
-            $table->string('last_name', 255);
-            $table->string('full_name', 255)->nullable();
-            $table->enum('sex', ['male', 'female'])->default('male');
             $table->timestamps();
 
             // Indexes
-            $table->index('phone_number', 'drivers_phone_number_idx1');
-            $table->index('first_name', 'drivers_first_name_idx1');
-            $table->index('last_name', 'drivers_last_name_idx1');
-            $table->index('full_name', 'drivers_full_name_idx1');
-            $table->index('sex', 'drivers_sex_idx1');
             $table->index('created_at', 'drivers_created_at_idx1');
             $table->index('updated_at', 'drivers_updated_at_idx1');
         });

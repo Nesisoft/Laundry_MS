@@ -10,8 +10,9 @@ return new class extends Migration
     {
         Schema::create('service_ratings', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('added_by')->nullable();
+            $table->foreign('added_by')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('branch_id')->constrained('branches')->cascadeOnDelete()->cascadeOnUpdate();
             $table->integer('rating');
             $table->text('comment')->nullable();
             $table->timestamps();

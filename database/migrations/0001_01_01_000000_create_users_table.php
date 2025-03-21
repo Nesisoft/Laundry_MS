@@ -2,6 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -10,19 +12,30 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('role')->default('customer');
-            $table->string('email')->unique();
+            $table->unsignedBigInteger('added_by')->nullable();
+            $table->foreign('added_by')->references('id')->on('users')->onDelete('set null')->onUpdate('cascade');
+            $table->enum('role', ['admin', 'manager', 'employee']);
+            $table->string('username')->unique();
             $table->string('password');
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
 
             // Indexes
             $table->index('role', 'users_role_idx1');
-            $table->index('email', 'users_email_idx1');
+            $table->index('username', 'users_username_idx1');
             $table->index('password', 'users_password_idx1');
             $table->index('created_at', 'users_created_at_idx1');
             $table->index('updated_at', 'users_updated_at_idx1');
         });
+
+        // Insert default admin user
+        DB::table('users')->insert([
+            'role' => 'admin',
+            'username' => 'admin',
+            'password' => Hash::make('123@Password'),
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
