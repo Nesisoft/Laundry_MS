@@ -13,15 +13,6 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();
-
-        $middleware->api([
-            'role' => \App\Http\Middleware\RoleMiddleware::class, // Custom middleware alias
-        ]);
-
-        $middleware->api('auth', [
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            \Illuminate\Auth\Middleware\Authenticate::class,
-        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
 

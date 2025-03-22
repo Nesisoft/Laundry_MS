@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Address;
-use App\Models\Admin;
 use App\Models\Business;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -49,7 +48,7 @@ class AuthController extends Controller
                 if (!$admin || !Hash::check('123@Password', $admin->password)) {
                     return response()->json([
                         'status' => 'error',
-                        'message' => 'Invalid admin credentials'
+                        'message' => 'Invalid login details credentials'
                     ], 401);
                 }
 
@@ -62,67 +61,74 @@ class AuthController extends Controller
                         'token' => $token,
                     ]
                 ], 201);
-            }
+            } else {
 
-            // Send a POST request to verify product key using Guzzle
-            $client = new GuzzleClient();
+                // Send a POST request to verify product key using Guzzle
+                $client = new GuzzleClient();
 
-            $response = $client->post('http://localhost/auth/business/product-key', [
-                'json' => [
-                    'product_key' => $request->product_key
-                ]
-            ]);
+                // $response = $client->post('http://localhost/auth/business/product-key', [
+                //     'json' => [
+                //         'product_key' => $request->product_key
+                //     ]
+                // ]);
 
-            $result = json_decode($response->getBody(), true);
+                // $result = json_decode($response->getBody(), true);
 
-            if (!isset($result['data']) || empty($result['data'])) {
+                $result = [
+                    'data'=>[
+                        'allow_access' => true
+                    ]
+                ];
+
+                if (!isset($result['data']) || empty($result['data'])) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Invalid product key'
+                    ], 422);
+                }
+
+                if (isset($result['data']) && !empty($result['data']) && !$result['data']['allow_access']) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'You have exceeded the number of installation allowed for this product key'
+                    ], 422);
+                }
+
+                DB::beginTransaction();
+
+                Business::update([
+                    'key' => 'product_key',
+                    'value' => $request->product_key
+                ]);
+
+                // Find admin user
+                $admin = User::where('username', 'admin')->first();
+
+                if (!$admin || !Hash::check('123@Password', $admin->password)) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Invalid admin credentials'
+                    ], 401);
+                }
+
+                $token = $admin->createToken('Admin Access')->plainTextToken;
+
+                DB::commit();
+
                 return response()->json([
-                    'status' => 'error',
-                    'message' => 'Invalid product key'
-                ], 422);
+                    'status' => 'success',
+                    'message' => 'Product key verified and registered successfully',
+                    'data' => [
+                        'token' => $token,
+                    ]
+                ], 201);
             }
-
-            if (isset($result['data']) && !empty($result['data']) && !$result['data']['allow_access']) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'You have exceeded the number of installation allowed for this product key'
-                ], 422);
-            }
-
-            DB::beginTransaction();
-
-            Business::updateOrCreate([
-                'key' => 'product_key',
-                'value' => $request->product_key
-            ]);
-
-            // Find admin user
-            $admin = User::where('username', 'admin')->first();
-
-            if (!$admin || !Hash::check('123@Password', $admin->password)) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Invalid admin credentials'
-                ], 401);
-            }
-
-            $token = $admin->createToken('Admin Access')->plainTextToken;
-
-            DB::commit();
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Product key verified and registered successfully',
-                'data' => [
-                    'token' => $token,
-                ]
-            ], 201);
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Error in login method: ' . $e->getMessage());
             return response()->json([
                 'status' => 'error',
-                'message' => 'An error occurred during login'
+                'message' => 'An error product key verification'
             ], 500);
         } catch (GuzzleRequestException $e) {
             DB::rollBack();
