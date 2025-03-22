@@ -22,10 +22,18 @@ return new class extends Migration
             $table->decimal('amount', 10, 2);
             $table->text('note')->nullable();
             $table->enum('status', ['pending', 'accepted', 'in-progress', 'completed', 'cancelled'])->default('pending');
+            $table->boolean('archived')->default(false);
             $table->timestamps();
 
             // Indexes
+            $table->index('location', 'delivery_requests_location_idx1');
+            $table->index('latitude', 'delivery_requests_latitude_idx1');
+            $table->index('longitude', 'delivery_requests_longitude_idx1');
+            $table->index('date', 'delivery_requests_date_idx1');
+            $table->index('time', 'delivery_requests_time_idx1');
+            $table->index('amount', 'delivery_requests_amount_idx1');
             $table->index('status', 'delivery_requests_status_idx1');
+            $table->index('archived', 'delivery_requests_archived_idx1');
             $table->index('created_at', 'delivery_requests_created_at_idx1');
             $table->index('updated_at', 'delivery_requests_updated_at_idx1');
         });

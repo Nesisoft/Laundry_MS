@@ -18,9 +18,11 @@ return new class extends Migration
             $table->string('username')->unique();
             $table->string('password');
             $table->timestamp('email_verified_at')->nullable();
+            $table->boolean('archived')->default(false);
             $table->timestamps();
 
             // Indexes
+            $table->index('archived', 'users_archived_idx1');
             $table->index('role', 'users_role_idx1');
             $table->index('username', 'users_username_idx1');
             $table->index('password', 'users_password_idx1');

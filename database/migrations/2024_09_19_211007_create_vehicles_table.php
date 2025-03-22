@@ -16,6 +16,7 @@ return new class extends Migration
             $table->enum('type', ['car', 'motorcycle', 'bicycle'])->default('car');
             $table->string('model', 255)->nullable();
             $table->string('year', 255)->nullable();
+            $table->boolean('archived')->default(false);
             $table->timestamps();
 
             // Define indexes
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->index('type', 'vehicles_type_idx1');
             $table->index('model', 'vehicles_model_idx1');
             $table->index('year', 'vehicles_year_idx1');
+            $table->index('archived', 'vehicles_archived_idx1');
             $table->index('created_at', 'vehicles_created_at_idx1');
             $table->index('updated_at', 'vehicles_updated_at_idx1');
         });

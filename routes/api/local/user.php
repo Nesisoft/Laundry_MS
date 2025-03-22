@@ -7,8 +7,15 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ManagerController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/admin-dashboard', [AdminController::class, 'dashboard']);
+});
+
+Route::prefix('employee')->group(function () {
+    Route::post('/', [EmployeeController::class, 'login']);
+    Route::put('/', [EmployeeController::class, 'sendResetLinkEmail']);
+    Route::get('/', [EmployeeController::class, 'resetPassword']);
+    Route::delete('/', [EmployeeController::class, 'resetPassword']);
 });
 
 Route::middleware(['auth:sanctum', 'role:manager'])->group(function () {

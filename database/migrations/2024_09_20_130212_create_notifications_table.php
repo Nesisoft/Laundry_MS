@@ -18,10 +18,15 @@ return new class extends Migration
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('set null')->onUpdate('cascade');
             $table->text('message');
+            $table->boolean('archived')->default(false);
+            $table->timestamps();
 
             // Define indexes
             $table->index('type', 'notifications_type_idx1');
             $table->index('to', 'notifications_to_idx1');
+            $table->index('archived', 'notifications_archived_idx1');
+            $table->index('created_at', 'notifications_created_at_idx1');
+            $table->index('updated_at', 'notifications_updated_at_idx1');
         });
     }
 

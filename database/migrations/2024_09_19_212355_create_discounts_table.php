@@ -16,6 +16,7 @@ return new class extends Migration
             $table->decimal('value', 10, 2);
             $table->string('description')->nullable();
             $table->date('expiration_date')->nullable();
+            $table->boolean('archived')->default(false);
             $table->timestamps();
 
 
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->index('type', 'discounts_type_idx1');
             $table->index('value', 'discounts_value_idx1');
             $table->index('expiration_date', 'discounts_expiration_date_idx1');
+            $table->index('archived', 'discounts_archived_idx1');
             $table->index('created_at', 'discounts_created_at_idx1');
             $table->index('updated_at', 'discounts_updated_at_idx1');
         });

@@ -22,18 +22,20 @@ return new class extends Migration
             $table->decimal('amount', 10, 2);
             $table->text('note')->nullable();
             $table->enum('status', ['pending', 'accepted', 'in-progress', 'completed', 'cancelled'])->default('pending');
+            $table->boolean('archived')->default(false);
             $table->timestamps();
 
 
             // Indexes
-            $table->index('location');
-            $table->index('latitude');
-            $table->index('longitude');
-            $table->index('date');
-            $table->index('time');
-            $table->index('amount');
-            $table->index('created_at');
-            $table->index('updated_at');
+            $table->index('location', 'pickup_requests_location_idx1');
+            $table->index('latitude', 'pickup_requests_latitude_idx1');
+            $table->index('longitude', 'pickup_requests_longitude_idx1');
+            $table->index('date', 'pickup_requests_date_idx1');
+            $table->index('time', 'pickup_requests_time_idx1');
+            $table->index('amount', 'pickup_requests_amount_idx1');
+            $table->index('archived', 'pickup_requests_archived_idx1');
+            $table->index('created_at', 'pickup_requests_created_at_idx1');
+            $table->index('updated_at', 'pickup_requests_updated_at_idx1');
         });
     }
 

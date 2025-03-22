@@ -19,8 +19,8 @@ return new class extends Migration
 
             // Indexes
             $table->index('rating');
-            $table->index('created_at');
-            $table->index('updated_at');
+            $table->index('created_at', 'service_ratings_created_at_idx1');
+            $table->index('updated_at', 'service_ratings_updated_at_idx1');
         });
     }
 

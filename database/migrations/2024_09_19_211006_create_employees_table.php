@@ -21,9 +21,11 @@ return new class extends Migration
             $table->string('last_name', 255);
             $table->decimal('salary')->nullable();
             $table->enum('sex', ['male', 'female'])->default('male');
+            $table->boolean('archived')->default(false);
             $table->timestamps();
 
             // Indexes
+            $table->index('archived', 'employees_archived_idx1');
             $table->index('email', 'employees_email_idx1');
             $table->index('phone_number', 'employees_phone_number_idx1');
             $table->index('first_name', 'employees_first_name_idx1');

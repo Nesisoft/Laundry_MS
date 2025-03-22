@@ -16,10 +16,10 @@ return new class extends Migration
             $table->text('message');
             $table->timestamps();
 
-            $table->index('type');
-            $table->index('title');
-            $table->index('created_at');
-            $table->index('updated_at');
+            $table->index('type', 'notification_templates_type_idx1');
+            $table->index('title', 'notification_templates_title_idx1');
+            $table->index('created_at', 'notification_templates_created_at_idx1');
+            $table->index('updated_at', 'notification_templates_updated_at_idx1');
         });
     }
 

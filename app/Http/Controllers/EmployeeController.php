@@ -28,7 +28,12 @@ class EmployeeController
         }
 
         try {
-            //code...
+            $employees = Employee::all();
+            return response()->json([
+                'success' => true,
+                'message' => 'New employee added successfully',
+                'data' => $employees
+            ], 201);
         } catch (Exception $e) {
             Log::error('Error retrieving user data', ['error' => $e->getMessage()]);
             return response()->json([
@@ -120,6 +125,13 @@ class EmployeeController
     }
 
     public function delete() : JsonResponse {
+        return response()->json([
+            'message' => '',
+            'data' => []
+        ], 201);
+    }
+
+    public function archive() : JsonResponse {
         return response()->json([
             'message' => '',
             'data' => []

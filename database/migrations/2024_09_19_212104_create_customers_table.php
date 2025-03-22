@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('phone_number', 20)->unique()->nullable();
             $table->string('email')->unique()->nullable();
             $table->enum('sex', ['male', 'female'])->default('male');
+            $table->boolean('archived')->default(false);
             $table->timestamps();
 
             // Indexes
@@ -27,6 +28,7 @@ return new class extends Migration
             $table->index('phone_number', 'customers_phone_number_idx1');
             $table->index('email', 'customers_email_idx1');
             $table->index('sex', 'customers_sex_idx1');
+            $table->index('archived', 'customers_archived_idx1');
             $table->index('created_at', 'customers_created_at_idx1');
             $table->index('updated_at', 'customers_updated_at_idx1');
         });

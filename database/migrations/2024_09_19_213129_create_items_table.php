@@ -15,11 +15,13 @@ return new class extends Migration
             $table->string('name');
             $table->decimal('amount', 10, 2);
             $table->string('image')->nullable();  // New image column
+            $table->boolean('archived')->default(false);
             $table->timestamps();
 
             // Indexes
             $table->index('name', 'items_name_idx1');
             $table->index('image', 'items_image_idx1');
+            $table->index('archived', 'items_archived_idx1');
             $table->index('created_at', 'items_created_at_idx1');
             $table->index('updated_at', 'items_updated_at_idx1');
         });

@@ -10,138 +10,120 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use Exception;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
     /**
      * Verify Access Token
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
-    public function VerifyAccessToken(Request $request): JsonResponse
+    public function verifyProductKey(Request $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'access_token' => 'required|string|min:16|max:16|exists:businesses,access_token',
-        ]);
+        try {
+            $validator = Validator::make($request->all(), [
+                'product_key' => 'required|string|min:16|max:16|exists:businesses,product_key',
+            ]);
 
-        if ($validator->fails()) {
-            Log::info("Access token verification failed");
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Product key verification failed',
+                    'data' => $validator->errors()
+                ], 422);
+            }
+
             return response()->json([
-                'message' => 'Access token verification failed',
-                'data' => $validator->errors()
-            ], 422);
-        }
-
-        return response()->json([
-            'message' => 'Access token verified successfully',
-            'data' => $validator->validated()
-        ], 200);
-    }
-
-    /**
-     * Register a new admin with address
-     */
-    public function register(Request $request): JsonResponse
-    {
-        // Validate User Data & Address Data
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6',
-            'phone_number' => 'required|string|max:20',
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'sex' => 'required|in:male,female',
-            'address' => 'required|array',
-            'address.street' => 'required|string|max:255',
-            'address.city' => 'required|string|max:255',
-            'address.state' => 'required|string|max:255',
-            'address.zip_code' => 'nullable|string|max:20',
-            'address.country' => 'required|string|max:100',
-            'address.latitude' => 'nullable|numeric',
-            'address.longitude' => 'nullable|numeric'
-        ]);
-
-        if ($validator->fails()) {
+                'message' => 'Product key verified successfully',
+                'data' => $validator->validated()
+            ], 200);
+        } catch (Exception $e) {
+            Log::error('Error in login method: ' . $e->getMessage());
             return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+                'status' => 'error',
+                'message' => 'An error occurred during login'
+            ], 500);
         }
-
-        // Create user with admin role
-        $user = User::create([
-            'role' => 'admin',
-            'email' => $request->email,
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-        ]);
-
-        // Create the address and associate it with the admin
-        $address = new Address($request->address);
-        $user->admin()->save($address); // This attaches the address to the admin polymorphically
-
-        // Create admin profile
-        $admin = Admin::create([
-            'user_id' => $user->id,
-            'address_id' => $address->id,
-            'phone_number' => $request->phone_number,
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'sex' => $request->sex,
-        ]);
-
-        return response()->json([
-            'message' => 'Admin registered successfully',
-            'data' => $user
-        ], 201);
     }
 
     /**
      * Admin Login
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
-    public function login(Request $request, string $role): JsonResponse
+    public function login(Request $request): JsonResponse
     {
-        // Validate login input
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required|string|min:8',
-        ]);
+        try {
+            // Validate login input
+            $validator = Validator::make($request->all(), [
+                'username' => 'required|username|exists:users,username',
+                'password' => 'required|string',
+                'device_name' => 'nullable|string',
+            ]);
 
-        if ($validator->fails()) {
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Invalid login credentials',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            // Find admin user
+            $user = User::where('username', $request->username)->first();
+
+            if (!$user || !Hash::check($request->password, $user->password)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Invalid user credentials'
+                ], 401);
+            }
+
+            // Create a new access token for the admin
+            $device = $request->device_name ?? 'User Device';
+            $token = $user->createToken($device)->plainTextToken;
+
             return response()->json([
-                'message' => 'Invalid login credentials',
-                'errors' => $validator->errors()
-            ], 422);
+                'status' => 'success',
+                'message' => 'Logged in successfully!',
+                'data' => [
+                    'access_token' => $token,
+                    'token_type' => 'Bearer',
+                    'user' => $user,
+                ]
+            ]);
+        } catch (Exception $e) {
+            Log::error('Error in login method: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An error occurred during login'
+            ], 500);
         }
-
-        // Find admin user
-        $user = User::where('email', $request->email)->where('role', $role)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Invalid admin credentials'], 401);
-        }
-
-        // Revoke previous tokens (optional security measure)
-        $user->tokens()->delete();
-
-        // Create a new access token for the admin
-        $token = $user->createToken('admin-access-token')->plainTextToken;
-
-        return response()->json([
-            'message' => 'Logged in successfully',
-            'data' => [
-                'access_token' => $token,
-                'token_type' => 'Bearer',
-                'user' => $user,
-            ]
-        ]);
     }
 
     /**
      * Admin Logout
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
     public function logout(Request $request): JsonResponse
     {
-        $request->user()->tokens()->delete();
-        return response()->json(['message' => 'Admin logged out successfully']);
+        try {
+            $request->user()->currentAccessToken()->delete();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'You have logged out successfully'
+            ]);
+        } catch (Exception $e) {
+            Log::error('Error in logout method: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An error occurred during logout'
+            ], 500);
+        }
     }
 }

@@ -19,11 +19,11 @@ return new class extends Migration
             $table->timestamps();
 
             // Indexes
-            $table->index('amount');
-            $table->index('method');
-            $table->index('status');
-            $table->index('created_at');
-            $table->index('updated_at');
+            $table->index('amount', 'pickup_request_payments_amount_idx1');
+            $table->index('method', 'pickup_request_payments_method_idx1');
+            $table->index('status', 'pickup_request_payments_status_idx1');
+            $table->index('created_at', 'pickup_request_payments_created_at_idx1');
+            $table->index('updated_at', 'pickup_request_payments_updated_at_idx1');
         });
     }
 
