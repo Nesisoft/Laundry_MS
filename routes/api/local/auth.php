@@ -4,10 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 
-Route::post('/verify-pk', [AuthController::class, 'login']);
+Route::post('/verify-pk', [AuthController::class, 'verifyProductKey']);
 Route::post('/setup-branch', [AuthController::class, 'sendResetLinkEmail']);
 
-Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 Route::post('/reset-password-request', [AuthController::class, 'sendResetLinkEmail']);

@@ -4,6 +4,10 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('local')->group(function () {
+    Route::prefix('auth')->group(function () {
+        require base_path('routes/api/local/auth.php');
+    });
+
     Route::prefix('user')->group(function () {
         require base_path('routes/api/local/user.php');
     });
