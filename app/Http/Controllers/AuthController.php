@@ -92,7 +92,7 @@ class AuthController extends Controller
 
             // Ensure only update happens, not insert
             Config::where('key', 'product_key')->update(['value' => $request->product_key]);
-            
+
             // Find admin user
             $admin = User::where('username', 'admin')->first();
 

@@ -12,7 +12,7 @@ class ConfigController extends Controller
     /**
      * Verify Access Token
      */
-    public function VerifyProductKey(Request $request): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'product_key' => 'required|string|min:16|max:16',
