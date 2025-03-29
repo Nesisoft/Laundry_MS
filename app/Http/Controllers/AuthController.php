@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Address;
 use App\Models\Admin;
-use App\Models\Business;
+use App\Models\Config;
+use App\Models\Employee;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,7 +42,7 @@ class AuthController extends Controller
             }
 
             // Find admin user
-            $product_key = Business::where('key', $request->product_key)->first();
+            $product_key = Config::where('key', $request->product_key)->first();
 
             if ($product_key) {
                 $admin = User::where('username', 'admin')->first();
@@ -67,35 +68,31 @@ class AuthController extends Controller
             // Send a POST request to verify product key using Guzzle
             $client = new GuzzleClient();
 
-            $response = $client->post('http://localhost/auth/business/product-key', [
+            $response = $client->post('http://localhost/laundry_service/product-key', [
                 'json' => [
                     'product_key' => $request->product_key
-                ]
+                ],
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                ],
+                'timeout' => 10,  // Set a timeout
             ]);
 
             $result = json_decode($response->getBody(), true);
 
-            if (!isset($result['data']) || empty($result['data'])) {
+            if (!isset($result['success']) || !$result['success']) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Invalid product key'
-                ], 422);
-            }
-
-            if (isset($result['data']) && !empty($result['data']) && !$result['data']['allow_access']) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'You have exceeded the number of installation allowed for this product key'
+                    'message' => $result['message']
                 ], 422);
             }
 
             DB::beginTransaction();
 
-            Business::updateOrCreate([
-                'key' => 'product_key',
-                'value' => $request->product_key
-            ]);
-
+            // Ensure only update happens, not insert
+            Config::where('key', 'product_key')->update(['value' => $request->product_key]);
+            
             // Find admin user
             $admin = User::where('username', 'admin')->first();
 
@@ -117,13 +114,6 @@ class AuthController extends Controller
                     'token' => $token,
                 ]
             ], 201);
-        } catch (Exception $e) {
-            DB::rollBack();
-            Log::error('Error in login method: ' . $e->getMessage());
-            return response()->json([
-                'status' => 'error',
-                'message' => 'An error occurred during login'
-            ], 500);
         } catch (GuzzleRequestException $e) {
             DB::rollBack();
             Log::error('Error verifying product key: ' . $e->getMessage());
@@ -132,7 +122,84 @@ class AuthController extends Controller
                 'message' => 'Failed to verify product key',
                 'data' => null
             ], 500);
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Error in login method: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An error occurred during login'
+            ], 500);
         }
+    }
+
+    /**
+     * Register a new admin with address
+     */
+    public function register(Request $request): JsonResponse
+    {
+        // Ensure the user is authenticated
+        $authUser = Auth::user();
+        if (!$authUser) {
+            return response()->json(['message' => 'Unauthorized. Please log in.'], 401);
+        }
+
+        // Ensure the authenticated user is an admin
+        if ($authUser->role !== 'admin') {
+            return response()->json(['message' => 'Access denied. Only admins can add new admins.'], 403);
+        }
+
+        // Validate User Data & Address Data
+        $validator = Validator::make($request->all(), [
+            'email' => 'nullable|email|unique:users,email',
+            'password' => 'required|string|min:6',
+            'phone_number' => 'required|string|max:20',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'sex' => 'required|in:male,female',
+
+            // Address fields are optional
+            'address' => 'nullable|array',
+            'address.street' => 'nullable|string|max:255',
+            'address.city' => 'nullable|string|max:255',
+            'address.state' => 'nullable|string|max:255',
+            'address.zip_code' => 'nullable|string|max:20',
+            'address.country' => 'nullable|string|max:100',
+            'address.latitude' => 'nullable|numeric',
+            'address.longitude' => 'nullable|numeric'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // // Create user with admin role
+        // $user = User::create([
+        //     'role' => 'admin',
+        //     'email' => $request->email,
+        //     'password' => Hash::make($request->password),
+        // ]);
+
+        // Create admin profile
+        $employee = Employee::create([
+            'phone_number' => $request->phone_number,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'sex' => $request->sex,
+        ]);
+
+        // Create address only if provided
+        if ($request->has('address') && !empty($request->address)) {
+            $address = new Address($request->address);
+            $employee->address()->save($address); // Attaches polymorphic relationship
+        }
+
+        return response()->json([
+            'message' => 'Admin registered successfully',
+            'data' => $employee
+        ], 201);
     }
 
     /**

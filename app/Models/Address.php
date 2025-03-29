@@ -11,7 +11,13 @@ class Address extends Model
     use HasFactory;
 
     protected $fillable = [
-        'street', 'city', 'state', 'zip_code', 'country', 'latitude', 'longitude'
+        'street',
+        'city',
+        'state',
+        'zip_code',
+        'country',
+        'latitude',
+        'longitude'
     ];
 
     public function addressable()
@@ -21,7 +27,7 @@ class Address extends Model
 
     public function businesses(): HasMany
     {
-        return $this->hasMany(Business::class);
+        return $this->hasMany(Config::class);
     }
 
     public function drivers(): HasMany

@@ -50,7 +50,7 @@ CREATE TABLE users (
     `address_id` INT,
     FOREIGN KEY (`address_id`) REFERENCES `addresses`(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
     `first_name` VARCHAR(255) NOT NULL,
-    `last_name` VARCHAR(255) NOT NULL, 
+    `last_name` VARCHAR(255) NOT NULL,
     `full_name` VARCHAR(255) GENERATED ALWAYS AS (CONCAT(`first_name`,' ',`last_name`)) STORED,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -361,7 +361,7 @@ CREATE TABLE system_notifications (
     `user_id` INT,
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     `title` VARCHAR(255),
-    `message` TEXT,  
+    `message` TEXT,
     `is_read` BOOLEAN DEFAULT FALSE,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -370,3 +370,24 @@ CREATE INDEX system_notifications_title_idx1 ON `system_notifications` (`title`)
 CREATE INDEX system_notifications_is_read_idx1 ON `system_notifications` (`is_read`);
 CREATE INDEX system_notifications_created_at_idx1 ON `system_notifications` (`created_at`);
 CREATE INDEX system_notifications_updated_at_idx1 ON `system_notifications` (`updated_at`);
+
+CREATE TABLE `product_keys` (
+    `key` VARCHAR(16) PRIMARY KEY,
+    `allow_installations` INT DEFAULT 1,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `archived` TINYINT(1) DEFAULT 0
+);
+CREATE INDEX product_keys_allow_installations_idx1 ON `product_keys` (`allow_installations`);
+CREATE INDEX product_keys_created_at_idx1 ON `product_keys` (`created_at`);
+CREATE INDEX product_keys_archived_idx1 ON `product_keys` (`archived`);
+
+INSERT INTO `product_keys` (`key`, `allow_installations`) VALUES ('ABCDEFGHIJKLMNOP', 1), ('ABC1DEF2GHI4JKL5', 2);
+
+CREATE TABLE installations(
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `product_key` VARCHAR(16) NOT NULL,
+    `device` JSON,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`product_key`) REFERENCES `product_keys`(`key`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE INDEX installations_created_at_idx1 ON `installations` (`created_at`);

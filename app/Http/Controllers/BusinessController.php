@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-class BusinessController extends Controller
+class ConfigController extends Controller
 {
     /**
      * Verify Access Token
@@ -35,5 +35,4 @@ class BusinessController extends Controller
             'data' => $validator->validated()
         ], 200);
     }
-
 }
