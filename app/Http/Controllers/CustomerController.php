@@ -24,11 +24,11 @@ class CustomerController extends Controller
         // Apply filters if provided
         if ($request->has('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('first_name', 'like', "%{$search}%")
-                  ->orWhere('last_name', 'like', "%{$search}%")
-                  ->orWhere('phone_number', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('last_name', 'like', "%{$search}%")
+                    ->orWhere('phone_number', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
@@ -92,10 +92,12 @@ class CustomerController extends Controller
 
         // Create address if address data is provided
         $addressId = null;
-        if ($request->filled('street') || $request->filled('city') ||
+        if (
+            $request->filled('street') || $request->filled('city') ||
             $request->filled('state') || $request->filled('zip_code') ||
             $request->filled('country') || $request->filled('latitude') ||
-            $request->filled('longitude')) {
+            $request->filled('longitude')
+        ) {
 
             $address = new Address();
             $address->street = $request->street;
@@ -206,10 +208,12 @@ class CustomerController extends Controller
         }
 
         // Update or create address if address data is provided
-        if ($request->filled('street') || $request->filled('city') ||
+        if (
+            $request->filled('street') || $request->filled('city') ||
             $request->filled('state') || $request->filled('zip_code') ||
             $request->filled('country') || $request->filled('latitude') ||
-            $request->filled('longitude')) {
+            $request->filled('longitude')
+        ) {
 
             $address = $customer->address ?? new Address();
 

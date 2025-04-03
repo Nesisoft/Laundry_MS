@@ -21,11 +21,6 @@ class Order extends Model
         return $this->belongsTo(Customer::class);
     }
 
-    public function orderStatus(): BelongsTo
-    {
-        return $this->belongsTo(OrderStatus::class);
-    }
-
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);

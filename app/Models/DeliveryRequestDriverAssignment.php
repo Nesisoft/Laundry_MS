@@ -11,7 +11,9 @@ class DeliveryRequestDriverAssignment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'driver_id', 'request_id', 'status'
+        'driver_id',
+        'request_id',
+        'status'
     ];
 
     public function user(): BelongsTo
@@ -19,9 +21,9 @@ class DeliveryRequestDriverAssignment extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function driver(): BelongsTo
+    public function employee(): BelongsTo
     {
-        return $this->belongsTo(Driver::class);
+        return $this->belongsTo(Employee::class);
     }
 
     public function deliveryRequest(): BelongsTo

@@ -27,12 +27,7 @@ class Address extends Model
 
     public function businesses(): HasMany
     {
-        return $this->hasMany(Config::class);
-    }
-
-    public function drivers(): HasMany
-    {
-        return $this->hasMany(Driver::class);
+        return $this->hasMany(LocalConfig::class);
     }
 
     public function customers(): HasMany
@@ -40,8 +35,8 @@ class Address extends Model
         return $this->hasMany(Customer::class);
     }
 
-    public function admins(): HasMany
+    public function employees(): HasMany
     {
-        return $this->hasMany(Admin::class);
+        return $this->hasMany(Employee::class);
     }
 }

@@ -11,15 +11,18 @@ class Employee extends Model
     use HasFactory;
 
     protected $fillable = [
-        'added_by', 'address_id', 'phone_number', 'first_name', 'last_name', 'sex'
+        'added_by',
+        'address_id',
+        'phone_number',
+        'first_name',
+        'last_name',
+        'sex'
     ];
 
     public function address()
     {
         return $this->morphOne(Address::class, 'addressable');
     }
-
-
 
     public function user(): BelongsTo
     {

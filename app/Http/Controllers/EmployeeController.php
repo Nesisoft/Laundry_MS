@@ -14,134 +14,130 @@ use Illuminate\Support\Facades\Validator;
 
 class EmployeeController
 {
-    public function fetchAll(Request $request) : JsonResponse {
-        // Ensure the user is authenticated
+    public function fetchAll(): JsonResponse
+    {
         $authUser = Auth::user();
-
-        if (!$authUser) {
-            return response()->json(['message' => 'Unauthorized. Please log in.'], 401);
-        }
-
-        // Ensure the authenticated user is an admin
-        if ($authUser->role !== 'manager') {
-            return response()->json(['message' => 'Access denied. Only managers can add new users.'], 403);
+        if (!$authUser || $authUser->role !== 'manager') {
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         try {
             $employees = Employee::all();
-            return response()->json([
-                'success' => true,
-                'message' => 'New employee added successfully',
-                'data' => $employees
-            ], 201);
+            return response()->json(['success' => true, 'data' => $employees], 200);
         } catch (Exception $e) {
-            Log::error('Error retrieving user data', ['error' => $e->getMessage()]);
-            return response()->json([
-                'message' => 'Error retrieving employees\' data',
-                'succes' => false
-            ], 500);
+            Log::error('Error retrieving employees', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'Error retrieving employees', 'success' => false], 500);
         }
-
     }
 
-    public function fetchOne() : JsonResponse {
-        return response()->json([
-            'message' => '',
-            'data' => []
-        ], 201);
-    }
-
-    public function add(Request $request) : JsonResponse {
-        // Ensure the user is authenticated
+    public function fetchArchivedEmployee(): JsonResponse
+    {
         $authUser = Auth::user();
-
-        if (!$authUser) {
-            return response()->json(['message' => 'Unauthorized. Please log in.'], 401);
-        }
-
-        // Ensure the authenticated user is an admin
-        if ($authUser->role !== 'manager') {
-            return response()->json(['message' => 'Access denied. Only managers can add new users.'], 403);
+        if (!$authUser || $authUser->role !== 'manager') {
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         try {
-            // Validate User Data & Address Data
-            $validator = Validator::make($request->all(), [
-                'email' => 'nullable|email|unique:users,email',
-                'phone_number' => 'required|string|max:20',
-                'first_name' => 'required|string|max:255',
-                'last_name' => 'required|string|max:255',
-                'sex' => 'required|in:male,female',
-
-                // Address fields are optional
-                'address' => 'nullable|array',
-                'address.street' => 'nullable|string|max:255',
-                'address.city' => 'nullable|string|max:255',
-                'address.state' => 'nullable|string|max:255',
-                'address.zip_code' => 'nullable|string|max:20',
-                'address.country' => 'nullable|string|max:100',
-                'address.latitude' => 'nullable|numeric',
-                'address.longitude' => 'nullable|numeric'
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json([
-                    'message' => 'Validation failed',
-                    'errors' => $validator->errors()
-                ], 422);
-            }
-
-            DB::beginTransaction();
-
-            // Create admin profile
-            $employee = Employee::create([
-                'phone_number' => $request->phone_number,
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'sex' => $request->sex,
-            ]);
-
-            // Create address only if provided
-            if ($request->has('address') && !empty($request->address)) {
-                $address = new Address($request->address);
-                $employee->address()->save($address); // Attaches polymorphic relationship
-            }
-
-            DB::commit();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'New employee added successfully',
-                'data' => $employee
-            ], 201);
+            $employees = Employee::where('archived', true)->get();
+            return response()->json(['success' => true, 'data' => $employees], 200);
         } catch (Exception $e) {
-            DB::rollback();
-            Log::error('Error sending verification code', ['error' => $e->getMessage()]);
-            return response()->json([
-                'success' => false,
-                'message' => 'An error occurred while adding new employee.'
-            ], 500);
+            Log::error('Error retrieving employees', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'Error retrieving employees', 'success' => false], 500);
         }
     }
 
-    public function delete() : JsonResponse {
-        return response()->json([
-            'message' => '',
-            'data' => []
-        ], 201);
+    public function fetchOne($id): JsonResponse
+    {
+        $authUser = Auth::user();
+        if (!$authUser || $authUser->role !== 'manager') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        try {
+            $employee = Employee::findOrFail($id);
+            return response()->json(['success' => true, 'data' => $employee], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Employee not found', 'success' => false], 404);
+        }
     }
 
-    public function archive() : JsonResponse {
-        return response()->json([
-            'message' => '',
-            'data' => []
-        ], 201);
+    public function add(Request $request): JsonResponse
+    {
+        $authUser = Auth::user();
+        if (!$authUser || $authUser->role !== 'manager') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'phone_number' => 'required|string|max:20',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'sex' => 'required|in:male,female',
+            'role' => 'required|string|max:255',
+            'salary' => 'nullable|numeric',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()], 422);
+        }
+
+        try {
+            DB::beginTransaction();
+            $employee = Employee::create($request->all());
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Employee added successfully', 'data' => $employee], 201);
+        } catch (Exception $e) {
+            DB::rollback();
+            Log::error('Error adding employee', ['error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Error adding employee'], 500);
+        }
     }
 
-    public function update() : JsonResponse {
-        return response()->json([
-            'message' => '',
-            'data' => []
-        ], 201);
+    public function update(Request $request, $id): JsonResponse
+    {
+        $authUser = Auth::user();
+        if (!$authUser || $authUser->role !== 'manager') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        try {
+            $employee = Employee::findOrFail($id);
+            $employee->update($request->all());
+            return response()->json(['success' => true, 'message' => 'Employee updated successfully', 'data' => $employee], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Error updating employee', 'success' => false], 500);
+        }
+    }
+
+    public function delete($id): JsonResponse
+    {
+        $authUser = Auth::user();
+        if (!$authUser || $authUser->role !== 'manager') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        try {
+            $employee = Employee::findOrFail($id);
+            $employee->delete();
+            return response()->json(['success' => true, 'message' => 'Employee deleted successfully'], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Error deleting employee', 'success' => false], 500);
+        }
+    }
+
+    public function archive($id): JsonResponse
+    {
+        $authUser = Auth::user();
+        if (!$authUser || $authUser->role !== 'manager') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        try {
+            $employee = Employee::findOrFail($id);
+            $employee->update(['archived' => true]);
+            return response()->json(['success' => true, 'message' => 'Employee archived successfully'], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Error archiving employee', 'success' => false], 500);
+        }
     }
 }

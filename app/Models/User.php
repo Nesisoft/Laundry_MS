@@ -15,7 +15,10 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
-        'role', 'email', 'password', 'email_verified_at'
+        'role',
+        'email',
+        'password',
+        'email_verified_at'
     ];
 
     protected $hidden = [
@@ -123,6 +126,6 @@ class User extends Authenticatable
 
     public function serviceRatings(): HasMany
     {
-        return $this->hasMany(ServiceRating::class);
+        return $this->hasMany(CustomerServiceRating::class);
     }
 }

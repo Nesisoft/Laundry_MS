@@ -2,10 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\Branch;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Customer extends Model
@@ -43,6 +41,6 @@ class Customer extends Model
 
     public function serviceRatings(): HasMany
     {
-        return $this->hasMany(ServiceRating::class);
+        return $this->hasMany(CustomerServiceRating::class);
     }
 }

@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Address;
-use App\Models\Admin;
-use App\Models\Config;
 use App\Models\Employee;
+use App\Models\LocalConfig;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -42,7 +41,7 @@ class AuthController extends Controller
             }
 
             // Find admin user
-            $product_key = Config::where('key', $request->product_key)->first();
+            $product_key = LocalConfig::where('key', $request->product_key)->first();
 
             if ($product_key) {
                 $admin = User::where('username', 'admin')->first();
@@ -91,7 +90,7 @@ class AuthController extends Controller
             DB::beginTransaction();
 
             // Ensure only update happens, not insert
-            Config::where('key', 'product_key')->update(['value' => $request->product_key]);
+            LocalConfig::where('key', 'product_key')->update(['value' => $request->product_key]);
 
             // Find admin user
             $admin = User::where('username', 'admin')->first();
@@ -174,13 +173,6 @@ class AuthController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-
-        // // Create user with admin role
-        // $user = User::create([
-        //     'role' => 'admin',
-        //     'email' => $request->email,
-        //     'password' => Hash::make($request->password),
-        // ]);
 
         // Create admin profile
         $employee = Employee::create([

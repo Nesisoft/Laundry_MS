@@ -11,7 +11,7 @@ class PickupRequestDriverAssignment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'driver_id', 'request_id', 'status'
+        'employee_id', 'request_id', 'status'
     ];
 
     public function user(): BelongsTo
@@ -19,9 +19,9 @@ class PickupRequestDriverAssignment extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function driver(): BelongsTo
+    public function employee(): BelongsTo
     {
-        return $this->belongsTo(Driver::class);
+        return $this->belongsTo(Employee::class);
     }
 
     public function pickupRequest(): BelongsTo
