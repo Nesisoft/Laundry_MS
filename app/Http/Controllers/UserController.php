@@ -15,14 +15,6 @@ use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
-    /**
-     * Constructor to apply middleware
-     */
-    // public function __construct()
-    // {
-    //     // Apply auth middleware to all methods except login and register
-    //     $this->middleware('auth:sanctum')->except(['login', 'register']);
-    // }
 
     /**
      * Display a listing of the users.
@@ -32,12 +24,22 @@ class UserController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
+        $authUser = Auth::user();
+
+        if (!$authUser) {
+            return response()->json(['message' => 'Unauthorized. Please log in.'], 401);
+        }
+
         try {
             $query = User::query();
 
             // Apply filters if provided
             if ($request->has('role')) {
                 $query->where('role', $request->role);
+            }
+
+            if ($request->has('added_by')) {
+                $query->where('added_by', $request->added_by);
             }
 
             if ($request->has('archived')) {
@@ -51,13 +53,13 @@ class UserController extends Controller
             $users = $query->paginate($perPage);
 
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'data' => $users
             ]);
         } catch (\Exception $e) {
             Log::error('Error in index method: ' . $e->getMessage());
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'An error occurred while retrieving users'
             ], 500);
         }
@@ -71,16 +73,31 @@ class UserController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        $authUser = Auth::user();
+
+        if (!$authUser) {
+            return response()->json(['message' => 'Unauthorized. Please log in.'], 401);
+        }
+
+        // Ensure the authenticated user is an admin
+        if (!in_array($authUser->role, ['admin', 'manager'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             $validator = Validator::make($request->all(), [
+                'employee' => 'required|string|exists:employees,id',
                 'username' => 'required|string|unique:users,username',
                 'password' => 'required|string|min:8',
-                'role' => 'required|in:admin,manager,employee',
+                'role' => 'required|exists:roles,name',
             ]);
 
             if ($validator->fails()) {
                 return response()->json([
-                    'status' => 'error',
+                    'success' => false,
                     'message' => 'Validation failed',
                     'errors' => $validator->errors()
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -89,6 +106,7 @@ class UserController extends Controller
             DB::beginTransaction();
 
             $user = new User();
+            $user->employee_id = $request->employee;
             $user->username = $request->username;
             $user->password = Hash::make($request->password);
             $user->role = $request->role;
@@ -98,7 +116,7 @@ class UserController extends Controller
             DB::commit();
 
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => 'User created successfully',
                 'data' => $user
             ], Response::HTTP_CREATED);
@@ -106,7 +124,7 @@ class UserController extends Controller
             DB::rollBack();
             Log::error('Error in store method: ' . $e->getMessage());
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'An error occurred while creating user'
             ], 500);
         }
@@ -120,17 +138,23 @@ class UserController extends Controller
      */
     public function show($id): JsonResponse
     {
+        $authUser = Auth::user();
+
+        if (!$authUser) {
+            return response()->json(['message' => 'Unauthorized. Please log in.'], 401);
+        }
+
         try {
             $user = User::findOrFail($id);
 
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'data' => $user
             ]);
         } catch (\Exception $e) {
             Log::error('Error in show method: ' . $e->getMessage());
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'An error occurred while retrieving user'
             ], 500);
         }
@@ -145,6 +169,20 @@ class UserController extends Controller
      */
     public function update(Request $request, $id): JsonResponse
     {
+        $authUser = Auth::user();
+
+        if (!$authUser) {
+            return response()->json(['message' => 'Unauthorized. Please log in.'], 401);
+        }
+
+        // Ensure the authenticated user is an admin
+        if (!in_array($authUser->role, ['admin', 'manager'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             DB::beginTransaction();
             $user = User::findOrFail($id);
@@ -152,12 +190,12 @@ class UserController extends Controller
             $validator = Validator::make($request->all(), [
                 'username' => 'sometimes|string|unique:users,username,' . $id,
                 'password' => 'sometimes|string|min:8',
-                'role' => 'sometimes|in:admin,manager,employee',
+                'role' => 'sometimes|exists:roles,name',
             ]);
 
             if ($validator->fails()) {
                 return response()->json([
-                    'status' => 'error',
+                    'success' => false,
                     'message' => 'Validation failed',
                     'errors' => $validator->errors()
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -178,7 +216,7 @@ class UserController extends Controller
             $user->save();
             DB::commit();
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => 'User updated successfully',
                 'data' => $user
             ]);
@@ -186,7 +224,7 @@ class UserController extends Controller
             DB::rollBack();
             Log::error('Error in update method: ' . $e->getMessage());
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'An error occurred while updating user'
             ], 500);
         }
@@ -200,6 +238,20 @@ class UserController extends Controller
      */
     public function archive($id): JsonResponse
     {
+        $authUser = Auth::user();
+
+        if (!$authUser) {
+            return response()->json(['message' => 'Unauthorized. Please log in.'], 401);
+        }
+
+        // Ensure the authenticated user is an admin
+        if (!in_array($authUser->role, ['admin', 'manager'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             DB::beginTransaction();
             $user = User::findOrFail($id);
@@ -207,14 +259,14 @@ class UserController extends Controller
             $user->save();
             DB::commit();
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => 'User archived successfully'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error in archive method: ' . $e->getMessage());
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'An error occurred while archiving user'
             ], 500);
         }
@@ -228,6 +280,20 @@ class UserController extends Controller
      */
     public function restore($id): JsonResponse
     {
+        $authUser = Auth::user();
+
+        if (!$authUser) {
+            return response()->json(['message' => 'Unauthorized. Please log in.'], 401);
+        }
+
+        // Ensure the authenticated user is an admin
+        if (!in_array($authUser->role, ['admin', 'manager'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             DB::beginTransaction();
             $user = User::findOrFail($id);
@@ -235,14 +301,14 @@ class UserController extends Controller
             $user->save();
             DB::commit();
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => 'User restored successfully'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error in restore method: ' . $e->getMessage());
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'An error occurred while restoring user'
             ], 500);
         }
@@ -256,20 +322,34 @@ class UserController extends Controller
      */
     public function destroy($id): JsonResponse
     {
+        $authUser = Auth::user();
+
+        if (!$authUser) {
+            return response()->json(['message' => 'Unauthorized. Please log in.'], 401);
+        }
+
+        // Ensure the authenticated user is an admin
+        if (!in_array($authUser->role, ['admin', 'manager'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             DB::beginTransaction();
             $user = User::findOrFail($id);
             $user->delete();
             DB::commit();
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => 'User deleted successfully'
             ]);
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Error in destroy method: ' . $e->getMessage());
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'An error occurred while deleting user'
             ], 500);
         }

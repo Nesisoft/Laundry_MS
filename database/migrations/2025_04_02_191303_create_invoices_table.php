@@ -17,8 +17,7 @@ return new class extends Migration
             $table->foreign('added_by')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('order_id')->constrained('orders')->cascadeOnDelete()->cascadeOnUpdate();
             $table->decimal('amount', 10, 2);
-            $table->decimal('discount', 10, 2);
-            $table->decimal('discount_amount', 10, 2)->storedAs('`amount` * `discount`');
+            $table->decimal('discount_amount', 10, 2)->default(0);
             $table->decimal('actual_amount', 10, 2)->storedAs('`amount` - `discount_amount`');
             $table->enum('status', ['fully paid', 'partly paid', 'unpaid'])->default('unpaid');
             $table->boolean('smsed')->default(false);

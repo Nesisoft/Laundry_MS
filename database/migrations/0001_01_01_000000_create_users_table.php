@@ -17,7 +17,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('added_by')->nullable();
             $table->foreign('added_by')->references('id')->on('users')->onDelete('set null')->onUpdate('cascade');
-            $table->enum('role', ['admin', 'manager', 'employee']);
+            $table->unsignedBigInteger('employee_id')->nullable();
+            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('role');
             $table->string('username')->unique();
             $table->string('password');
             $table->timestamp('email_verified_at')->nullable();
@@ -37,7 +39,7 @@ return new class extends Migration
         DB::table('users')->insert([
             'role' => 'admin',
             'username' => 'admin',
-            'password' => Hash::make('123@Password'),
+            'password' => Hash::make('admin'),
             'created_at' => now(),
             'updated_at' => now()
         ]);

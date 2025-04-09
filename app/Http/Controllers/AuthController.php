@@ -34,7 +34,7 @@ class AuthController extends Controller
 
             if ($validator->fails()) {
                 return response()->json([
-                    'status' => 'error',
+                    'success' => false,
                     'message' => 'Product key verification failed',
                     'data' => $validator->errors()
                 ], 422);
@@ -48,7 +48,7 @@ class AuthController extends Controller
 
                 if (!$admin || !Hash::check('123@Password', $admin->password)) {
                     return response()->json([
-                        'status' => 'error',
+                        'success' => false,
                         'message' => 'Invalid admin credentials'
                     ], 401);
                 }
@@ -56,7 +56,7 @@ class AuthController extends Controller
                 $token = $admin->createToken('Admin Access')->plainTextToken;
 
                 return response()->json([
-                    'status' => 'success',
+                    'success' => true,
                     'message' => 'Product key verified and registered successfully',
                     'data' => [
                         'token' => $token,
@@ -82,7 +82,7 @@ class AuthController extends Controller
 
             if (!isset($result['success']) || !$result['success']) {
                 return response()->json([
-                    'status' => 'error',
+                    'success' => false,
                     'message' => $result['message']
                 ], 422);
             }
@@ -97,7 +97,7 @@ class AuthController extends Controller
 
             if (!$admin || !Hash::check('123@Password', $admin->password)) {
                 return response()->json([
-                    'status' => 'error',
+                    'success' => false,
                     'message' => 'Invalid admin credentials'
                 ], 401);
             }
@@ -107,7 +107,7 @@ class AuthController extends Controller
             DB::commit();
 
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => 'Product key verified and registered successfully',
                 'data' => [
                     'token' => $token,
@@ -117,7 +117,7 @@ class AuthController extends Controller
             DB::rollBack();
             Log::error('Error verifying product key: ' . $e->getMessage());
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Failed to verify product key',
                 'data' => null
             ], 500);
@@ -125,7 +125,7 @@ class AuthController extends Controller
             DB::rollBack();
             Log::error('Error in login method: ' . $e->getMessage());
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'An error occurred during login'
             ], 500);
         }
@@ -169,6 +169,7 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
+                'success' => false,
                 'message' => 'Validation failed',
                 'errors' => $validator->errors()
             ], 422);
@@ -205,14 +206,14 @@ class AuthController extends Controller
         try {
             // Validate login input
             $validator = Validator::make($request->all(), [
-                'username' => 'required|username|exists:users,username',
+                'username' => 'required|string|exists:users,username',
                 'password' => 'required|string',
                 'device_name' => 'nullable|string',
             ]);
 
             if ($validator->fails()) {
                 return response()->json([
-                    'status' => 'error',
+                    'success' => false,
                     'message' => 'Invalid login credentials',
                     'errors' => $validator->errors()
                 ], 422);
@@ -223,7 +224,7 @@ class AuthController extends Controller
 
             if (!$user || !Hash::check($request->password, $user->password)) {
                 return response()->json([
-                    'status' => 'error',
+                    'success' => false,
                     'message' => 'Invalid user credentials'
                 ], 401);
             }
@@ -233,18 +234,17 @@ class AuthController extends Controller
             $token = $user->createToken($device)->plainTextToken;
 
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => 'Logged in successfully!',
                 'data' => [
                     'access_token' => $token,
-                    'token_type' => 'Bearer',
-                    'user' => $user,
+                    'token_type' => 'Bearer'
                 ]
             ]);
         } catch (Exception $e) {
             Log::error('Error in login method: ' . $e->getMessage());
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'An error occurred during login'
             ], 500);
         }
@@ -261,13 +261,13 @@ class AuthController extends Controller
         try {
             $request->user()->currentAccessToken()->delete();
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => 'You have logged out successfully'
             ]);
         } catch (Exception $e) {
             Log::error('Error in logout method: ' . $e->getMessage());
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'An error occurred during logout'
             ], 500);
         }

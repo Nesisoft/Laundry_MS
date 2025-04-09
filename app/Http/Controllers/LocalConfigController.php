@@ -19,6 +19,13 @@ final class LocalConfigController extends Controller
      */
     public function fetchAll(): JsonResponse
     {
+        // Ensure the user is authenticated
+        $authUser = Auth::user();
+
+        if (!$authUser) {
+            return response()->json(['message' => 'Unauthorized. Please log in.'], 401);
+        }
+
         try {
             $localConfigs = LocalConfig::all();
             return response()->json(['success' => true, 'data' => $localConfigs], 200);
@@ -33,6 +40,13 @@ final class LocalConfigController extends Controller
      */
     public function fetchOne(string $key): JsonResponse
     {
+        // Ensure the user is authenticated
+        $authUser = Auth::user();
+
+        if (!$authUser) {
+            return response()->json(['message' => 'Unauthorized. Please log in.'], 401);
+        }
+
         $config = LocalConfig::where('key', $key)->first();
 
         if (!$config) {
@@ -56,7 +70,7 @@ final class LocalConfigController extends Controller
 
         // Ensure the authenticated user is an admin
         if (!in_array($authUser->role, ['admin', 'manager'])) {
-            return response()->json(['message' => 'Access denied. Only managers and admins can perform this operation.'], 403);
+            return response()->json(['message' => 'Access denied.'], 403);
         }
 
         $validator = Validator::make($request->all(), [
@@ -91,7 +105,7 @@ final class LocalConfigController extends Controller
 
         // Ensure the authenticated user is an admin
         if (!in_array($authUser->role, ['admin', 'manager'])) {
-            return response()->json(['message' => 'Access denied. Only managers and admins can perform this operation.'], 403);
+            return response()->json(['message' => 'Access denied.'], 403);
         }
 
         try {
@@ -145,7 +159,7 @@ final class LocalConfigController extends Controller
 
         // Ensure the authenticated user is an admin
         if (!in_array($authUser->role, ['admin', 'manager'])) {
-            return response()->json(['message' => 'Access denied. Only managers and admins can perform this operation.'], 403);
+            return response()->json(['message' => 'Access denied.'], 403);
         }
 
         try {
@@ -246,7 +260,7 @@ final class LocalConfigController extends Controller
 
         // Ensure the authenticated user is an admin
         if (!in_array($authUser->role, ['admin', 'manager'])) {
-            return response()->json(['message' => 'Access denied. Only managers and admins can perform this operation.'], 403);
+            return response()->json(['message' => 'Access denied.'], 403);
         }
 
         $validator = Validator::make($request->all(), [
@@ -287,7 +301,7 @@ final class LocalConfigController extends Controller
 
         // Ensure the authenticated user is an admin
         if (!in_array($authUser->role, ['admin', 'manager'])) {
-            return response()->json(['message' => 'Access denied. Only managers and admins can perform this operation.'], 403);
+            return response()->json(['message' => 'Access denied.'], 403);
         }
 
         $config = LocalConfig::where('key', $key)->first();

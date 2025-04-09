@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -25,6 +26,14 @@ return new class extends Migration
             $table->index('created_at', 'services_created_at_idx1');
             $table->index('updated_at', 'services_updated_at_idx1');
         });
+
+        // Insert initial data
+        DB::table('services')->insert([
+            ['name' => 'Wash only', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Iron only', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Wash and Iron', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Wash, Iron and Fold', 'created_at' => now(), 'updated_at' => now()]
+        ]);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -16,9 +17,9 @@ return new class extends Migration
             $table->unsignedBigInteger('address_id')->nullable();
             $table->foreign('address_id')->references('id')->on('addresses')->onDelete('cascade')->onUpdate('cascade');
             $table->string('role');
-            $table->string('phone_number', 20);
-            $table->string('first_name', 255);
-            $table->string('last_name', 255);
+            $table->string('phone_number', 20)->nullable();
+            $table->string('first_name', 255)->nullable();
+            $table->string('last_name', 255)->nullable();
             $table->decimal('salary')->nullable();
             $table->enum('sex', ['male', 'female'])->default('male');
             $table->boolean('archived')->default(false);
@@ -35,6 +36,13 @@ return new class extends Migration
             $table->index('created_at', 'employees_created_at_idx1');
             $table->index('updated_at', 'employees_updated_at_idx1');
         });
+
+        // Insert default admin user
+        DB::table('users')->insert([
+            'role' => 'admin',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
     }
 
     /**

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('added_by')->nullable();
             $table->foreign('added_by')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('name')->nullable();
             $table->enum('type', ['percentage', 'amount'])->default('percentage');
             $table->decimal('value', 10, 2);
             $table->string('description')->nullable();
@@ -23,7 +24,7 @@ return new class extends Migration
             $table->timestamps();
 
 
-            $table->index('code', 'discounts_code_idx1');
+            $table->index('name', 'discounts_name_idx1');
             $table->index('type', 'discounts_type_idx1');
             $table->index('value', 'discounts_value_idx1');
             $table->index('expiration_date', 'discounts_expiration_date_idx1');

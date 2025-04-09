@@ -74,12 +74,12 @@ class PickupRequestController extends Controller
             $pickupRequests = $query->paginate($perPage);
 
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'data' => $pickupRequests
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Failed to retrieve pickup requests',
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -109,7 +109,7 @@ class PickupRequestController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Validation failed',
                 'errors' => $validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -135,7 +135,7 @@ class PickupRequestController extends Controller
             DB::commit();
 
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => 'Pickup request created successfully',
                 'data' => $pickupRequest
             ], Response::HTTP_CREATED);
@@ -143,7 +143,7 @@ class PickupRequestController extends Controller
             DB::rollBack();
 
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Failed to create pickup request',
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -163,12 +163,12 @@ class PickupRequestController extends Controller
                 ->findOrFail($id);
 
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'data' => $pickupRequest
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Pickup request not found or error retrieving data',
                 'error' => $e->getMessage()
             ], Response::HTTP_NOT_FOUND);
@@ -199,7 +199,7 @@ class PickupRequestController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Validation failed',
                 'errors' => $validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -255,7 +255,7 @@ class PickupRequestController extends Controller
             DB::commit();
 
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => 'Pickup request updated successfully',
                 'data' => $pickupRequest
             ]);
@@ -263,7 +263,7 @@ class PickupRequestController extends Controller
             DB::rollBack();
 
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Failed to update pickup request',
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -285,7 +285,7 @@ class PickupRequestController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Validation failed',
                 'errors' => $validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -301,7 +301,7 @@ class PickupRequestController extends Controller
             DB::commit();
 
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => 'Pickup request status updated successfully',
                 'data' => $pickupRequest
             ]);
@@ -309,7 +309,7 @@ class PickupRequestController extends Controller
             DB::rollBack();
 
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Failed to update pickup request status',
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -331,7 +331,7 @@ class PickupRequestController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Validation failed',
                 'errors' => $validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -349,7 +349,7 @@ class PickupRequestController extends Controller
             DB::commit();
 
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => "Pickup request {$action} successfully",
                 'data' => $pickupRequest
             ]);
@@ -357,7 +357,7 @@ class PickupRequestController extends Controller
             DB::rollBack();
 
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Failed to toggle archive status',
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -387,14 +387,14 @@ class PickupRequestController extends Controller
             DB::commit();
 
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => 'Pickup request deleted successfully'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
 
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Failed to delete pickup request',
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -416,7 +416,7 @@ class PickupRequestController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Validation failed',
                 'errors' => $validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -448,7 +448,7 @@ class PickupRequestController extends Controller
             DB::commit();
 
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => 'Driver assigned successfully',
                 'data' => [
                     'pickup_request' => $pickupRequest,
@@ -459,7 +459,7 @@ class PickupRequestController extends Controller
             DB::rollBack();
 
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Failed to assign driver',
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -482,7 +482,7 @@ class PickupRequestController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Validation failed',
                 'errors' => $validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -523,7 +523,7 @@ class PickupRequestController extends Controller
             DB::commit();
 
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => 'Driver assignment status updated successfully',
                 'data' => [
                     'pickup_request' => $pickupRequest,
@@ -534,7 +534,7 @@ class PickupRequestController extends Controller
             DB::rollBack();
 
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Failed to update driver assignment status',
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -557,7 +557,7 @@ class PickupRequestController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Validation failed',
                 'errors' => $validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -579,7 +579,7 @@ class PickupRequestController extends Controller
             // Ensure the payment amount doesn't exceed the remaining amount
             if ($request->amount > $remaining) {
                 return response()->json([
-                    'status' => 'error',
+                    'success' => false,
                     'message' => 'Payment amount exceeds the remaining balance',
                     'data' => [
                         'total_amount' => $pickupRequest->amount,
@@ -610,7 +610,7 @@ class PickupRequestController extends Controller
             DB::commit();
 
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => 'Payment recorded successfully',
                 'data' => [
                     'payment' => $payment,
@@ -623,7 +623,7 @@ class PickupRequestController extends Controller
             DB::rollBack();
 
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Failed to record payment',
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -654,7 +654,7 @@ class PickupRequestController extends Controller
             $remaining = $pickupRequest->amount - $totalPaid;
 
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'data' => [
                     'pickup_request' => $pickupRequest,
                     'payments' => $payments,
@@ -668,7 +668,7 @@ class PickupRequestController extends Controller
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Failed to retrieve payments',
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
