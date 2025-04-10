@@ -31,6 +31,7 @@ class InvoiceController extends Controller
             return response()->json(['success' => false, 'message' => 'Error fetching invoices'], 500);
         }
     }
+    
     public function store(Request $request): JsonResponse
     {
         $authUser = Auth::user();

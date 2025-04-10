@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('pickup_request_payments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('added_by')->nullable();
-            $table->foreign('added_by')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('added_by')->references('id')->on('users')->onDelete('set null')->onUpdate('cascade');
             $table->foreignId('request_id')->constrained('pickup_requests')->cascadeOnDelete()->cascadeOnUpdate();
             $table->decimal('amount', 10, 2);
             $table->enum('method', ['Cash', 'MoMo', 'Card']);

@@ -14,15 +14,12 @@ return new class extends Migration
         Schema::create('delivery_request_payments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('added_by')->nullable();
-            $table->foreign('added_by')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('request_id');
+            $table->foreign('added_by')->references('id')->on('users')->onDelete('set null')->onUpdate('cascade');
+            $table->foreignId('request_id')->constrained('delivery_requests')->cascadeOnDelete()->cascadeOnUpdate();
             $table->decimal('amount', 10, 2);
             $table->enum('method', ['Cash', 'MoMo', 'Card']);
             $table->enum('status', ['paid', 'unpaid']);
             $table->timestamps();
-
-            // Foreign key constraint
-            $table->foreign('request_id')->references('id')->on('delivery_requests')->onDelete('cascade')->onUpdate('cascade');
 
             // Indexes
             $table->index('amount', 'delivery_request_payments_amount_idx1');

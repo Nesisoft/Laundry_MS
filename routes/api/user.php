@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\DeliveryRequestController;
+use App\Http\Controllers\DeliveryRequestPaymentController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\InvoiceController;
@@ -9,6 +11,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LocalConfigController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderItemController;
+use App\Http\Controllers\PickupRequestController;
+use App\Http\Controllers\PickupRequestPaymentController;
 use App\Http\Controllers\UserController;
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -91,7 +95,49 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     Route::prefix('invoice-payments')->group(function () {
-        Route::get('/', [InvoicePaymentController::class, 'index']);
-        Route::post('/', [InvoicePaymentController::class, 'store']);
+        Route::get('/payments', [InvoicePaymentController::class, 'index']);
+        Route::post('/payments', [InvoicePaymentController::class, 'store']);
+    });
+
+    // Pickup Requests
+    Route::prefix('pickup-requests')->group(function () {
+        Route::controller(PickupRequestController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::post('/', 'store');
+            Route::get('/payments', 'getAllPayments');
+
+            Route::get('/{id}', 'show');
+            Route::put('/{id}', 'update');
+            Route::delete('/{id}', 'destroy');
+
+            Route::patch('/{id}/status', 'updateStatus');
+            Route::patch('/{id}/archive', 'archive');
+            Route::patch('/{id}/restore', 'restore');
+            Route::post('/{id}/drivers', 'assignDriver');
+            Route::patch('/{id}/drivers/{assignmentId}', 'updateDriverAssignmentStatus');
+            Route::post('/{id}/payments', 'recordPayment');
+            Route::get('/{id}/payments', 'getPayments');
+        });
+    });
+
+    // Delivery Requests
+    Route::prefix('delivery-requests')->group(function () {
+        Route::controller(DeliveryRequestController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::post('/', 'store');
+            Route::get('/payments', 'getAllPayments');
+
+            Route::get('/{id}', 'show');
+            Route::put('/{id}', 'update');
+            Route::delete('/{id}', 'destroy');
+
+            Route::patch('/{id}/status', 'updateStatus');
+            Route::patch('/{id}/archive', 'archive');
+            Route::patch('/{id}/restore', 'restore');
+            Route::post('/{id}/drivers', 'assignDriver');
+            Route::patch('/{id}/drivers/{assignmentId}', 'updateDriverAssignmentStatus');
+            Route::post('/{id}/payments', 'recordPayment');
+            Route::get('/{id}/payments', 'getPayments');
+        });
     });
 });

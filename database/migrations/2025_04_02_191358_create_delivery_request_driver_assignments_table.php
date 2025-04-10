@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('delivery_request_driver_assignments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('added_by')->nullable();
-            $table->foreign('added_by')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('added_by')->references('id')->on('users')->onDelete('set null')->onUpdate('cascade');
             $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('request_id')->constrained('delivery_requests')->cascadeOnDelete()->cascadeOnUpdate();
             $table->enum('status', ['in-progress', 'completed', 'cancelled'])->default('in-progress');

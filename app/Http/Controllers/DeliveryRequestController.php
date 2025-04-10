@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PickupRequest;
-use App\Models\PickupRequestPayment;
-use App\Models\PickupRequestDriverAssignment;
+use App\Models\Customer;
+use App\Models\DeliveryRequest;
+use App\Models\DeliveryRequestPayment;
+use App\Models\DeliveryRequestDriverAssignment;
 use App\Models\Employee;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
-class PickupRequestController extends Controller
+class DeliveryRequestController extends Controller
 {
     /**
-     * Display a listing of the pickup requests.
+     * Display a listing of the delivery requests.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -24,15 +26,15 @@ class PickupRequestController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = PickupRequest::query();
+            $query = DeliveryRequest::query();
 
             // Apply filters if provided
             if ($request->has('customer_id')) {
                 $query->where('customer_id', $request->customer_id);
             }
 
-            if ($request->has('service_id')) {
-                $query->where('service_id', $request->service_id);
+            if ($request->has('order_id')) {
+                $query->where('order_id', $request->order_id);
             }
 
             if ($request->has('status')) {
@@ -58,8 +60,8 @@ class PickupRequestController extends Controller
                 $query->with('customer');
             }
 
-            if ($request->has('with_service') && $request->boolean('with_service')) {
-                $query->with('service');
+            if ($request->has('with_order') && $request->boolean('with_order')) {
+                $query->with('order');
             }
 
             if ($request->has('with_payments') && $request->boolean('with_payments')) {
@@ -72,23 +74,23 @@ class PickupRequestController extends Controller
 
             // Pagination
             $perPage = $request->input('per_page', 15);
-            $pickupRequests = $query->paginate($perPage);
+            $deliveryRequests = $query->paginate($perPage);
 
             return response()->json([
                 'success' => true,
-                'data' => $pickupRequests
+                'data' => $deliveryRequests
             ]);
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to retrieve pickup requests',
+                'message' => 'Failed to retrieve delivery requests',
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
     /**
-     * Store a newly created pickup request in storage.
+     * Store a newly created delivery request in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -97,7 +99,6 @@ class PickupRequestController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'customer_id' => 'required|exists:customers,id',
-            'service_id' => 'required|exists:services,id',
             'location' => 'nullable|string',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
@@ -119,40 +120,39 @@ class PickupRequestController extends Controller
         DB::beginTransaction();
 
         try {
-            $pickupRequest = new PickupRequest();
-            $pickupRequest->customer_id = $request->customer_id;
-            $pickupRequest->service_id = $request->service_id;
-            $pickupRequest->location = $request->location;
-            $pickupRequest->latitude = $request->latitude;
-            $pickupRequest->longitude = $request->longitude;
-            $pickupRequest->date = $request->date;
-            $pickupRequest->time = $request->time;
-            $pickupRequest->amount = $request->amount;
-            $pickupRequest->note = $request->note;
-            $pickupRequest->status = $request->status ?? 'pending';
-            $pickupRequest->added_by = Auth::id(); // Assuming authentication is set up
-            $pickupRequest->save();
+            $deliveryRequest = new DeliveryRequest();
+            $deliveryRequest->customer_id = $request->customer_id;
+            $deliveryRequest->location = $request->location;
+            $deliveryRequest->latitude = $request->latitude;
+            $deliveryRequest->longitude = $request->longitude;
+            $deliveryRequest->date = $request->date;
+            $deliveryRequest->time = $request->time;
+            $deliveryRequest->amount = $request->amount;
+            $deliveryRequest->note = $request->note;
+            $deliveryRequest->status = $request->status ?? 'pending';
+            $deliveryRequest->added_by = Auth::id(); // Assuming authentication is set up
+            $deliveryRequest->save();
 
             DB::commit();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Pickup request created successfully',
-                'data' => $pickupRequest
+                'message' => 'Delivery request created successfully',
+                'data' => $deliveryRequest
             ], Response::HTTP_CREATED);
         } catch (Exception $e) {
             DB::rollBack();
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create pickup request',
+                'message' => 'Failed to create delivery request',
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
     /**
-     * Display the specified pickup request.
+     * Display the specified delivery request.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -160,24 +160,24 @@ class PickupRequestController extends Controller
     public function show($id)
     {
         try {
-            $pickupRequest = PickupRequest::with(['customer', 'service', 'payments', 'driverAssignments'])
+            $deliveryRequest = DeliveryRequest::with(['customer', 'service', 'payments', 'driverAssignments'])
                 ->findOrFail($id);
 
             return response()->json([
                 'success' => true,
-                'data' => $pickupRequest
+                'data' => $deliveryRequest
             ]);
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Pickup request not found or error retrieving data',
+                'message' => 'Delivery request not found or error retrieving data',
                 'error' => $e->getMessage()
             ], Response::HTTP_NOT_FOUND);
         }
     }
 
     /**
-     * Update the specified pickup request in storage.
+     * Update the specified delivery request in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -187,7 +187,6 @@ class PickupRequestController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'customer_id' => 'sometimes|exists:customers,id',
-            'service_id' => 'sometimes|exists:services,id',
             'location' => 'nullable|string',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
@@ -209,70 +208,66 @@ class PickupRequestController extends Controller
         DB::beginTransaction();
 
         try {
-            $pickupRequest = PickupRequest::findOrFail($id);
+            $deliveryRequest = DeliveryRequest::findOrFail($id);
 
             if ($request->has('customer_id')) {
-                $pickupRequest->customer_id = $request->customer_id;
-            }
-
-            if ($request->has('service_id')) {
-                $pickupRequest->service_id = $request->service_id;
+                $deliveryRequest->customer_id = $request->customer_id;
             }
 
             if ($request->has('location')) {
-                $pickupRequest->location = $request->location;
+                $deliveryRequest->location = $request->location;
             }
 
             if ($request->has('latitude')) {
-                $pickupRequest->latitude = $request->latitude;
+                $deliveryRequest->latitude = $request->latitude;
             }
 
             if ($request->has('longitude')) {
-                $pickupRequest->longitude = $request->longitude;
+                $deliveryRequest->longitude = $request->longitude;
             }
 
             if ($request->has('date')) {
-                $pickupRequest->date = $request->date;
+                $deliveryRequest->date = $request->date;
             }
 
             if ($request->has('time')) {
-                $pickupRequest->time = $request->time;
+                $deliveryRequest->time = $request->time;
             }
 
             if ($request->has('amount')) {
-                $pickupRequest->amount = $request->amount;
+                $deliveryRequest->amount = $request->amount;
             }
 
             if ($request->has('note')) {
-                $pickupRequest->note = $request->note;
+                $deliveryRequest->note = $request->note;
             }
 
             if ($request->has('status')) {
-                $pickupRequest->status = $request->status;
+                $deliveryRequest->status = $request->status;
             }
 
-            $pickupRequest->save();
+            $deliveryRequest->save();
 
             DB::commit();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Pickup request updated successfully',
-                'data' => $pickupRequest
+                'message' => 'Delivery request updated successfully',
+                'data' => $deliveryRequest
             ]);
         } catch (Exception $e) {
             DB::rollBack();
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update pickup request',
+                'message' => 'Failed to update delivery request',
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
     /**
-     * Update the status of the specified pickup request.
+     * Update the status of the specified delivery request.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -295,23 +290,23 @@ class PickupRequestController extends Controller
         DB::beginTransaction();
 
         try {
-            $pickupRequest = PickupRequest::findOrFail($id);
-            $pickupRequest->status = $request->status;
-            $pickupRequest->save();
+            $deliveryRequest = DeliveryRequest::findOrFail($id);
+            $deliveryRequest->status = $request->status;
+            $deliveryRequest->save();
 
             DB::commit();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Pickup request status updated successfully',
-                'data' => $pickupRequest
+                'message' => 'Delivery request status updated successfully',
+                'data' => $deliveryRequest
             ]);
         } catch (Exception $e) {
             DB::rollBack();
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update pickup request status',
+                'message' => 'Failed to update delivery request status',
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -328,7 +323,7 @@ class PickupRequestController extends Controller
     }
 
     /**
-     * Archive or unarchive the specified pickup request.
+     * Archive or unarchive the specified delivery request.
      *
      * @param  int  $id
      * @param  bool  $status
@@ -342,9 +337,9 @@ class PickupRequestController extends Controller
         DB::beginTransaction();
 
         try {
-            $pickupRequest = PickupRequest::findOrFail($id);
-            $pickupRequest->archived = $status;
-            $pickupRequest->save();
+            $deliveryRequest = DeliveryRequest::findOrFail($id);
+            $deliveryRequest->archived = $status;
+            $deliveryRequest->save();
 
             $action = $status ? 'archived' : 'unarchived';
 
@@ -352,8 +347,8 @@ class PickupRequestController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => "Pickup request {$action} successfully",
-                'data' => $pickupRequest
+                'message' => "Delivery request {$action} successfully",
+                'data' => $deliveryRequest
             ]);
         } catch (Exception $e) {
             DB::rollBack();
@@ -367,7 +362,7 @@ class PickupRequestController extends Controller
     }
 
     /**
-     * Remove the specified pickup request from storage.
+     * Remove the specified delivery request from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -377,34 +372,34 @@ class PickupRequestController extends Controller
         DB::beginTransaction();
 
         try {
-            $pickupRequest = PickupRequest::findOrFail($id);
+            $deliveryRequest = DeliveryRequest::findOrFail($id);
 
             // Delete related records first
-            $pickupRequest->payments->each->delete();
-            $pickupRequest->driverAssignments->each->delete();
+            $deliveryRequest->payments()->each->delete();
+            $deliveryRequest->driverAssignments()->each->delete();
 
-            // Delete the pickup request
-            $pickupRequest->delete();
+            // Delete the delivery request
+            $deliveryRequest->delete();
 
             DB::commit();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Pickup request deleted successfully'
+                'message' => 'Delivery request deleted successfully'
             ]);
         } catch (Exception $e) {
             DB::rollBack();
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete pickup request',
+                'message' => 'Failed to delete delivery request',
                 'error' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
     /**
-     * Assign a driver to a pickup request.
+     * Assign a driver to a delivery request.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -427,8 +422,8 @@ class PickupRequestController extends Controller
         DB::beginTransaction();
 
         try {
-            // Check if the pickup request exists
-            $pickupRequest = PickupRequest::findOrFail($id);
+            // Check if the delivery request exists
+            $deliveryRequest = DeliveryRequest::findOrFail($id);
 
             // Check if the employee exists and is not archived
             $employee = Employee::where('id', $request->employee_id)
@@ -436,16 +431,16 @@ class PickupRequestController extends Controller
                 ->firstOrFail();
 
             // Create a new driver assignment
-            $assignment = new PickupRequestDriverAssignment();
+            $assignment = new DeliveryRequestDriverAssignment();
             $assignment->employee_id = $request->employee_id;
             $assignment->request_id = $id;
             $assignment->status = 'in-progress';
             $assignment->added_by = Auth::id();
             $assignment->save();
 
-            // Update the pickup request status to 'in-progress'
-            $pickupRequest->status = 'in-progress';
-            $pickupRequest->save();
+            // Update the delivery request status to 'in-progress'
+            $deliveryRequest->status = 'in-progress';
+            $deliveryRequest->save();
 
             DB::commit();
 
@@ -453,7 +448,7 @@ class PickupRequestController extends Controller
                 'success' => true,
                 'message' => 'Driver assigned successfully',
                 'data' => [
-                    'pickup_request' => $pickupRequest,
+                    'delivery_request' => $deliveryRequest,
                     'assignment' => $assignment
                 ]
             ]);
@@ -493,11 +488,11 @@ class PickupRequestController extends Controller
         DB::beginTransaction();
 
         try {
-            // Check if the pickup request exists
-            $pickupRequest = PickupRequest::findOrFail($id);
+            // Check if the delivery request exists
+            $deliveryRequest = DeliveryRequest::findOrFail($id);
 
-            // Check if the assignment exists and belongs to this pickup request
-            $assignment = PickupRequestDriverAssignment::where('id', $assignmentId)
+            // Check if the assignment exists and belongs to this delivery request
+            $assignment = DeliveryRequestDriverAssignment::where('id', $assignmentId)
                 ->where('request_id', $id)
                 ->firstOrFail();
 
@@ -505,20 +500,20 @@ class PickupRequestController extends Controller
             $assignment->status = $request->status;
             $assignment->save();
 
-            // Update the pickup request status if assignment is completed or cancelled
+            // Update the delivery request status if assignment is completed or cancelled
             if ($request->status == 'completed') {
-                $pickupRequest->status = 'completed';
-                $pickupRequest->save();
+                $deliveryRequest->status = 'completed';
+                $deliveryRequest->save();
             } elseif ($request->status == 'cancelled') {
-                // If there are no other active assignments, revert the pickup request to 'accepted'
-                $activeAssignments = PickupRequestDriverAssignment::where('request_id', $id)
+                // If there are no other active assignments, revert the delivery request to 'accepted'
+                $activeAssignments = DeliveryRequestDriverAssignment::where('request_id', $id)
                     ->where('status', 'in-progress')
                     ->where('id', '!=', $assignmentId)
                     ->count();
 
                 if ($activeAssignments == 0) {
-                    $pickupRequest->status = 'accepted';
-                    $pickupRequest->save();
+                    $deliveryRequest->status = 'pending';
+                    $deliveryRequest->save();
                 }
             }
 
@@ -528,7 +523,7 @@ class PickupRequestController extends Controller
                 'success' => true,
                 'message' => 'Driver assignment status updated successfully',
                 'data' => [
-                    'pickup_request' => $pickupRequest,
+                    'delivery_request' => $deliveryRequest,
                     'assignment' => $assignment
                 ]
             ]);
@@ -544,7 +539,7 @@ class PickupRequestController extends Controller
     }
 
     /**
-     * Record a payment for a pickup request.
+     * Record a payment for a delivery request.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -568,15 +563,15 @@ class PickupRequestController extends Controller
         DB::beginTransaction();
 
         try {
-            // Check if the pickup request exists
-            $pickupRequest = PickupRequest::findOrFail($id);
+            // Check if the delivery request exists
+            $deliveryRequest = DeliveryRequest::findOrFail($id);
 
             // Calculate the total payments made so far
-            $totalPaid = PickupRequestPayment::where('request_id', $id)
+            $totalPaid = DeliveryRequestPayment::where('request_id', $id)
                 ->sum('amount');
 
             // Calculate the amount still to be paid
-            $remaining = $pickupRequest->amount - $totalPaid;
+            $remaining = $deliveryRequest->amount - $totalPaid;
 
             // Ensure the payment amount doesn't exceed the remaining amount
             if ($request->amount > $remaining) {
@@ -584,7 +579,7 @@ class PickupRequestController extends Controller
                     'success' => false,
                     'message' => 'Payment amount exceeds the remaining balance',
                     'data' => [
-                        'total_amount' => $pickupRequest->amount,
+                        'total_amount' => $deliveryRequest->amount,
                         'already_paid' => $totalPaid,
                         'remaining' => $remaining,
                         'attempted_payment' => $request->amount
@@ -593,7 +588,7 @@ class PickupRequestController extends Controller
             }
 
             // Create a new payment record
-            $payment = new PickupRequestPayment();
+            $payment = new DeliveryRequestPayment();
             $payment->request_id = $id;
             $payment->amount = $request->amount;
             $payment->method = $request->method;
@@ -616,7 +611,7 @@ class PickupRequestController extends Controller
                 'message' => 'Payment recorded successfully',
                 'data' => [
                     'payment' => $payment,
-                    'total_amount' => $pickupRequest->amount,
+                    'total_amount' => $deliveryRequest->amount,
                     'total_paid' => $totalPaid + $request->amount,
                     'remaining' => $remaining - $request->amount
                 ]
@@ -633,7 +628,7 @@ class PickupRequestController extends Controller
     }
 
     /**
-     * Get all payments for a pickup request.
+     * Get all payments for a delivery request.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -641,11 +636,11 @@ class PickupRequestController extends Controller
     public function getPayments($id)
     {
         try {
-            // Check if the pickup request exists
-            $pickupRequest = PickupRequest::findOrFail($id);
+            // Check if the delivery request exists
+            $deliveryRequest = DeliveryRequest::findOrFail($id);
 
-            // Get all payments for this pickup request
-            $payments = PickupRequestPayment::where('request_id', $id)
+            // Get all payments for this delivery request
+            $payments = DeliveryRequestPayment::where('request_id', $id)
                 ->orderBy('created_at', 'desc')
                 ->get();
 
@@ -653,15 +648,15 @@ class PickupRequestController extends Controller
             $totalPaid = $payments->sum('amount');
 
             // Calculate the remaining amount
-            $remaining = $pickupRequest->amount - $totalPaid;
+            $remaining = $deliveryRequest->amount - $totalPaid;
 
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'pickup_request' => $pickupRequest,
+                    'delivery_request' => $deliveryRequest,
                     'payments' => $payments,
                     'summary' => [
-                        'total_amount' => $pickupRequest->amount,
+                        'total_amount' => $deliveryRequest->amount,
                         'total_paid' => $totalPaid,
                         'remaining' => $remaining,
                         'payment_status' => $remaining <= 0 ? 'fully paid' : 'partially paid'
@@ -678,34 +673,34 @@ class PickupRequestController extends Controller
     }
 
     /**
-     * Get all payments for a pickup request.
+     * Get all payments for a delivery request.
      *
      * @return \Illuminate\Http\Response
      */
     public function getAllPayments()
     {
         try {
-            // Get all pickup requests
-            $pickupRequests = PickupRequest::all();
-
             // Get all payments
-            $payments = PickupRequestPayment::with('pickupRequest') // Assuming the relation is named pickupRequest
+            $payments = DeliveryRequestPayment::with('deliveryRequest')
                 ->orderBy('created_at', 'desc')
                 ->get();
 
-            // Calculate the total amount of all pickup requests
-            $totalAmount = $pickupRequests->sum('amount');
-
-            // Calculate the total paid amount
+            // Calculate total paid amount
             $totalPaid = $payments->sum('amount');
 
-            // Calculate the remaining amount
+            // Get all delivery requests
+            $deliveryRequests = DeliveryRequest::all();
+
+            // Calculate total amount from all requests
+            $totalAmount = $deliveryRequests->sum('amount');
+
+            // Calculate remaining amount
             $remaining = $totalAmount - $totalPaid;
 
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'pickup_requests' => $pickupRequests,
+                    'delivery_requests' => $deliveryRequests,
                     'payments' => $payments,
                     'summary' => [
                         'total_amount' => $totalAmount,
@@ -716,7 +711,11 @@ class PickupRequestController extends Controller
                 ]
             ]);
         } catch (Exception $e) {
-            // Error handling remains the same
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve payments',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }
