@@ -312,6 +312,126 @@ class CustomerController extends Controller
         }
     }
 
+    public function addAddress(Request $request, $id)
+    {
+        $authUser = Auth::user();
+
+        if (!$authUser) {
+            return response()->json(['message' => 'Unauthorized. Please log in.'], 401);
+        }
+
+        if (!in_array($authUser->role, ['admin', 'manager'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Access denied.'
+            ], 403);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'street' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'zip_code' => 'nullable|string|max:20',
+            'country' => 'nullable|string|max:100',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $customer = Customer::findOrFail($id);
+
+            // Check if custo$customer already has address
+            if ($customer->address) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Address already exists. Please update instead.'
+                ], 409);
+            }
+
+            $address = new Address($request->all());
+            $customer->address()->save($address);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Address added successfully',
+                'data' => $address
+            ]);
+        } catch (Exception $e) {
+            Log::error('Error adding address', ['error' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Error adding address'
+            ], 500);
+        }
+    }
+
+    public function updateAddress(Request $request, $id)
+    {
+        $authUser = Auth::user();
+
+        if (!$authUser) {
+            return response()->json(['message' => 'Unauthorized. Please log in.'], 401);
+        }
+
+        if (!in_array($authUser->role, ['admin', 'manager'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Access denied.'
+            ], 403);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'street' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:255',
+            'state' => 'nullable|string|max:255',
+            'zip_code' => 'nullable|string|max:20',
+            'country' => 'nullable|string|max:100',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $customer = Customer::findOrFail($id);
+
+            if (!$customer->address) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Address not found for this custo$customer.'
+                ], 404);
+            }
+
+            $customer->address->update($request->all());
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Address updated successfully',
+                'data' => $customer->address
+            ]);
+        } catch (Exception $e) {
+            Log::error('Error updating address', ['error' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating address'
+            ], 500);
+        }
+    }
+
     /**
      * Archive the specified customer.
      *

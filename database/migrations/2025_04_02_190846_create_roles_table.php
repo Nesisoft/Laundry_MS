@@ -19,7 +19,7 @@ return new class extends Migration
 
             $table->index('name', 'roles_name_idx1');
             $table->index('created_at', 'roles_created_at_idx1');
-            $table->index('updated_at', 'roles_created_at_idx1');
+            $table->index('updated_at', 'roles_updated_at_idx1');
         });
 
         DB::table('roles')->insert([

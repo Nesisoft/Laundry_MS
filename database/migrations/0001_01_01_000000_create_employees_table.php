@@ -38,7 +38,7 @@ return new class extends Migration
         });
 
         // Insert default admin user
-        DB::table('users')->insert([
+        DB::table('employees')->insert([
             'role' => 'admin',
             'created_at' => now(),
             'updated_at' => now()

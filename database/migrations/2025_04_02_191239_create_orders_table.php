@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('added_by')->nullable();
             $table->foreign('added_by')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('service_id')->constrained('services')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete()->cascadeOnUpdate();
             $table->enum('status', ['ready for washing', 'ready for ironing', 'ready for pickup', 'ready for delivery']);
             $table->boolean('archived')->default(false);

@@ -26,6 +26,10 @@ class OrderController extends Controller
                 $query->where('status', $request->status);
             }
 
+            if ($request->has('service_id')) {
+                $query->where('service_id', $request->service_id);
+            }
+
             if ($request->has('archived')) {
                 $query->where('archived', $request->boolean('archived'));
             } else {
@@ -52,6 +56,7 @@ class OrderController extends Controller
 
         $validator = Validator::make($request->all(), [
             'customer_id' => 'required|exists:customers,id',
+            'service_id' => 'required|exists:services,id',
             'status' => 'required|string|max:255',
         ]);
 
@@ -64,6 +69,7 @@ class OrderController extends Controller
 
             $order = Order::create([
                 'customer_id' => $request->customer_id,
+                'service_id' => $request->service_id,
                 'status' => $request->status,
                 'added_by' => $authUser->id,
             ]);
@@ -112,7 +118,8 @@ class OrderController extends Controller
 
         $validator = Validator::make($request->all(), [
             'status' => 'sometimes|string|max:255',
-            'customer_id' => 'sometimes|exists:customers,id'
+            'customer_id' => 'sometimes|exists:customers,id',
+            'service_id' => 'sometimes|exists:services,id'
         ]);
 
         if ($validator->fails()) {
@@ -124,6 +131,7 @@ class OrderController extends Controller
 
             if ($request->has('status')) $order->status = $request->status;
             if ($request->has('customer_id')) $order->customer_id = $request->customer_id;
+            if ($request->has('service_id')) $order->service_id = $request->service_id;
 
             $order->save();
 

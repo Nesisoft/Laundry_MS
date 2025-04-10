@@ -37,6 +37,8 @@ return new class extends Migration
 
         // Insert default admin user
         DB::table('users')->insert([
+            'added_by' => 1,
+            'employee_id' => 1,
             'role' => 'admin',
             'username' => 'admin',
             'password' => Hash::make('admin'),

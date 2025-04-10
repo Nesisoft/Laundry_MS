@@ -95,7 +95,7 @@ class AuthController extends Controller
             // Find admin user
             $admin = User::where('username', 'admin')->first();
 
-            if (!$admin || !Hash::check('123@Password', $admin->password)) {
+            if (!$admin || !Hash::check('admin', $admin->password)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Invalid admin credentials'

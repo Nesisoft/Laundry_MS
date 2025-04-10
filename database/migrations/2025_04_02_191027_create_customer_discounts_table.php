@@ -22,7 +22,7 @@ return new class extends Migration
 
             $table->index('expiration_date', 'customer_discounts_expiry_idx1');
             $table->index('created_at', 'customer_discounts_created_at_idx1');
-            $table->index('updated_at', 'customer_discounts_created_at_idx1');
+            $table->index('updated_at', 'customer_discounts_updated_at_idx1');
         });
     }
 
