@@ -12,8 +12,18 @@ class DashboardController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function dashboard()
     {
         return view('dashboard');
+    }
+
+    /**
+     * Display the dashboard page.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function pos()
+    {
+        return view('pos');
     }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class LocalConfigController extends Controller
+class PickupController extends Controller
 {
     /**
      * Display the dashboard page.
@@ -13,6 +13,6 @@ class LocalConfigController extends Controller
      */
     public function index()
     {
-        return view('settings.index');
+        return view('pickups.index');
     }
 }

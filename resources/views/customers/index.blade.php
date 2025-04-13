@@ -91,6 +91,9 @@
         </div>
     </div>
 
+@endsection
+
+@section('modals')
     <!-- Add/Edit Customer Modal -->
     <div class="modal" id="customerModal">
         <div class="modal-content">
@@ -278,10 +281,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Toast Notification -->
-    <div class="toast-container" id="toastContainer"></div>
-
 @endsection
 
 @section('scripts')

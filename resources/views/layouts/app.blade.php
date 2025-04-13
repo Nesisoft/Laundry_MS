@@ -143,18 +143,23 @@
 
             <!-- Content -->
             <div class="content-wrapper">
-                @yield('content')
+                <!-- Dashboard Content -->
+                <div class="dashboard-content">
+                    @yield('content')
+                </div>
             </div>
 
         </main>
 
     </div>
 
+    @yield('modals')
+
     <!-- Toast Notification -->
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- Common Scripts -->
-    <script src="{{ asset('js/services/api-service.js') }}"></script>
+    <script src="{{ asset('js/services/api.js') }}"></script>
     <script src="{{ asset('js/ui/sidebar.js') }}"></script>
     <script src="{{ asset('js/ui/dropdown.js') }}"></script>
     <script src="{{ asset('js/ui/toast.js') }}"></script>

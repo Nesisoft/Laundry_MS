@@ -5,6 +5,8 @@ use App\Http\Controllers\ConfigurationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DeliveryController;
+use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LocalConfigController;
@@ -21,7 +23,9 @@ Route::get('/configure-business', [ConfigurationController::class, 'configureBus
 Route::get('/configure-admin', [ConfigurationController::class, 'configureAdmin'])->name('configureAdmin');
 Route::get('/login', [ConfigurationController::class, 'login'])->name('login');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+
+Route::get('/pos', [DashboardController::class, 'pos'])->name('pos');
 
 // Customers
 Route::prefix('customers')->name('customers.')->group(function () {
@@ -55,7 +59,7 @@ Route::prefix('pickups')->name('pickups.')->group(function () {
 
 // Items
 Route::prefix('deliveries')->name('deliveries.')->group(function () {
-    Route::get('/', [ItemController::class, 'index'])->name('index');
+    Route::get('/', [DeliveryController::class, 'index'])->name('index');
 });
 
 // Items
@@ -65,7 +69,7 @@ Route::prefix('invoices')->name('invoices.')->group(function () {
 
 // Items
 Route::prefix('discounts')->name('discounts.')->group(function () {
-    Route::get('/', [ItemController::class, 'index'])->name('index');
+    Route::get('/', [DiscountController::class, 'index'])->name('index');
 });
 
 // Settings
