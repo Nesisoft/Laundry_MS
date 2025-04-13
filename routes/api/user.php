@@ -1,124 +1,139 @@
 <?php
 
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\CustomerDiscountController;
-use App\Http\Controllers\DeliveryRequestController;
-use App\Http\Controllers\DeliveryRequestPaymentController;
-use App\Http\Controllers\DiscountController;
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\InvoicePaymentController;
-use App\Http\Controllers\ItemController;
+use App\Http\Controllers\Api\CustomerApiController;
+use App\Http\Controllers\Api\CustomerDiscountApiController;
+use App\Http\Controllers\Api\DeliveryRequestApiController;
+use App\Http\Controllers\Api\DeliveryRequestPaymentController;
+use App\Http\Controllers\Api\DiscountApiController;
+use App\Http\Controllers\Api\EmployeeApiController;
+use App\Http\Controllers\Api\InvoiceApiController;
+use App\Http\Controllers\Api\InvoicePaymentApiController;
+use App\Http\Controllers\Api\ItemApiController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LocalConfigController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\OrderItemController;
-use App\Http\Controllers\PickupRequestController;
-use App\Http\Controllers\PickupRequestPaymentController;
-use App\Http\Controllers\UserController;
-use App\Models\Customer;
+use App\Http\Controllers\Api\LocalConfigApiController;
+use App\Http\Controllers\Api\OrderApiController;
+use App\Http\Controllers\Api\OrderItemApiController;
+use App\Http\Controllers\Api\PickupRequestApiController;
+use App\Http\Controllers\Api\PickupRequestPaymentController;
+use App\Http\Controllers\Api\UserApiController;
+
+use App\Http\Controllers\Api\DashboardApiController;
+use App\Http\Controllers\Api\OrderController;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware(['auth:sanctum'])->group(function () {
+
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/stats', [DashboardApiController::class, 'getStats']);
+    });
+
     Route::prefix('config')->group(function () {
-        Route::get('/', [LocalConfigController::class, 'fetchAll']); // Fetch all config values
-        Route::post('/', [LocalConfigController::class, 'add']); // Add a new config entry
-        Route::put('/', [LocalConfigController::class, 'setAllConfigValues']); // Keep this last
-        Route::put('/reset', [LocalConfigController::class, 'resetDefaultConfigs']);
-        Route::put('/logo', [LocalConfigController::class, 'setLogo']);
-        Route::put('/update', [LocalConfigController::class, 'update']);
-        Route::get('/{key}', [LocalConfigController::class, 'fetchOne']); // Fetch a single config by key
-        Route::delete('/{key}', [LocalConfigController::class, 'delete']);
-        Route::get('/value/{key}', [LocalConfigController::class, 'getValue']); // Get the value of a specific config key
+        Route::get('/', [LocalConfigApiController::class, 'fetchAll']); // Fetch all config values
+        Route::post('/', [LocalConfigApiController::class, 'add']); // Add a new config entry
+        Route::put('/', [LocalConfigApiController::class, 'setAllConfigValues']); // Keep this last
+        Route::put('/reset', [LocalConfigApiController::class, 'resetDefaultConfigs']);
+        Route::put('/logo', [LocalConfigApiController::class, 'setLogo']);
+        Route::put('/update', [LocalConfigApiController::class, 'update']);
+        Route::get('/{key}', [LocalConfigApiController::class, 'fetchOne']); // Fetch a single config by key
+        Route::delete('/{key}', [LocalConfigApiController::class, 'delete']);
+        Route::get('/value/{key}', [LocalConfigApiController::class, 'getValue']); // Get the value of a specific config key
     });
 
     Route::prefix('users')->group(function () {
-        Route::get('/', [UserController::class, 'index']);               // Get list of users (with filters)
-        Route::post('/', [UserController::class, 'store']);              // Create new user
-        Route::get('/{id}', [UserController::class, 'show']);            // Get a single user by ID
-        Route::put('/{id}', [UserController::class, 'update']);          // Update user by ID
-        Route::delete('/{id}', [UserController::class, 'destroy']);      // Permanently delete a user
-        Route::put('/archive/{id}', [UserController::class, 'archive']); // Archive a user
-        Route::put('/restore/{id}', [UserController::class, 'restore']); // Restore a user
+        Route::get('/', [UserApiController::class, 'index']);               // Get list of users (with filters)
+        Route::post('/', [UserApiController::class, 'store']);              // Create new user
+        Route::get('/{id}', [UserApiController::class, 'show']);            // Get a single user by ID
+        Route::put('/{id}', [UserApiController::class, 'update']);          // Update user by ID
+        Route::delete('/{id}', [UserApiController::class, 'destroy']);      // Permanently delete a user
+        Route::put('/archive/{id}', [UserApiController::class, 'archive']); // Archive a user
+        Route::put('/restore/{id}', [UserApiController::class, 'restore']); // Restore a user
     });
 
     Route::prefix('employees')->group(function () {
-        Route::get('/', [EmployeeController::class, 'fetchAll']); // Fetch all employee values
-        Route::post('/', [EmployeeController::class, 'add']); // Add a new employee entry
-        Route::put('/', [EmployeeController::class, 'update']);
-        Route::get('/archived', [EmployeeController::class, 'fetchArchived']);
-        Route::get('/{employee_id}', [EmployeeController::class, 'fetchOne']); // Fetch a single employee by key
-        Route::delete('/{employee_id}', [EmployeeController::class, 'delete']);
-        Route::post('/address/{employee_id}', [EmployeeController::class, 'addAddress']);
-        Route::put('/archive/{employee_id}', [EmployeeController::class, 'archive']);
-        Route::put('/address/{employee_id}', [EmployeeController::class, 'updateAddress']);
+        Route::get('/', [EmployeeApiController::class, 'fetchAll']); // Fetch all employee values
+        Route::post('/', [EmployeeApiController::class, 'add']); // Add a new employee entry
+        Route::put('/', [EmployeeApiController::class, 'update']);
+        Route::get('/archived', [EmployeeApiController::class, 'fetchArchived']);
+        Route::get('/{employee_id}', [EmployeeApiController::class, 'fetchOne']); // Fetch a single employee by key
+        Route::delete('/{employee_id}', [EmployeeApiController::class, 'delete']);
+        Route::post('/address/{employee_id}', [EmployeeApiController::class, 'addAddress']);
+        Route::put('/archive/{employee_id}', [EmployeeApiController::class, 'archive']);
+        Route::put('/address/{employee_id}', [EmployeeApiController::class, 'updateAddress']);
     });
 
     Route::prefix('customers')->group(function () {
-        Route::get('/', [CustomerController::class, 'index']); // Fetch all employee values
-        Route::post('/', [CustomerController::class, 'store']); // Add a new employee entry
-        Route::put('/', [CustomerController::class, 'update']);
-        Route::get('/{employee_id}', [CustomerController::class, 'show']); // Fetch a single employee by key
-        Route::delete('/{employee_id}', [CustomerController::class, 'destroy']); // Fetch a single employee by key
-        Route::patch('/{employee_id}', [CustomerController::class, 'restore']);
-        Route::post('/address/{employee_id}', [CustomerController::class, 'addAddress']);
-        Route::patch('/archive/{employee_id}', [CustomerController::class, 'archive']);
-        Route::patch('/address/{employee_id}', [CustomerController::class, 'updateAddress']);
+        Route::get('/', [CustomerApiController::class, 'index']); // Fetch all employee values
+        Route::post('/', [CustomerApiController::class, 'store']); // Add a new employee entry
+        Route::put('/', [CustomerApiController::class, 'update']);
+        Route::get('/{employee_id}', [CustomerApiController::class, 'show']); // Fetch a single employee by key
+        Route::delete('/{employee_id}', [CustomerApiController::class, 'destroy']); // Fetch a single employee by key
+        Route::patch('/{employee_id}', [CustomerApiController::class, 'restore']);
+        Route::post('/address/{employee_id}', [CustomerApiController::class, 'addAddress']);
+        Route::patch('/archive/{employee_id}', [CustomerApiController::class, 'archive']);
+        Route::patch('/address/{employee_id}', [CustomerApiController::class, 'updateAddress']);
     });
 
     Route::prefix('items')->group(function () {
-        Route::get('/', [ItemController::class, 'index']);         // Get all items
-        Route::post('/', [ItemController::class, 'store']);         // Create
-        Route::delete('/{id}', [ItemController::class, 'destroy']); // Delete
-        Route::get('/{id}', [ItemController::class, 'show']);       // Get one
-        Route::put('/{id}', [ItemController::class, 'update']);     // Update
-        Route::get('/archived', [ItemController::class, 'fetchArchived']); // Archived items
-        Route::put('/archive/{id}', [ItemController::class, 'archive']); // Archive
-        Route::put('/restore/{id}', [ItemController::class, 'restore']); // Restore archived
+        Route::get('/', [ItemApiController::class, 'index']);         // Get all items
+        Route::post('/', [ItemApiController::class, 'store']);         // Create
+        Route::delete('/{id}', [ItemApiController::class, 'destroy']); // Delete
+        Route::get('/{id}', [ItemApiController::class, 'show']);       // Get one
+        Route::put('/{id}', [ItemApiController::class, 'update']);     // Update
+        Route::get('/archived', [ItemApiController::class, 'fetchArchived']); // Archived items
+        Route::put('/archive/{id}', [ItemApiController::class, 'archive']); // Archive
+        Route::put('/restore/{id}', [ItemApiController::class, 'restore']); // Restore archived
     });
 
     Route::prefix('discounts')->group(function () {
-        Route::get('/', [DiscountController::class, 'index']);
-        Route::post('/', [DiscountController::class, 'store']);
-        Route::get('/{id}', [DiscountController::class, 'show']);
-        Route::put('/{id}', [DiscountController::class, 'update']);
-        Route::delete('/{id}', [DiscountController::class, 'destroy']);
-        Route::put('/archive/{id}', [DiscountController::class, 'archive']);
-        Route::put('/restore/{id}', [DiscountController::class, 'restore']);
+        Route::get('/', [DiscountApiController::class, 'index']);
+        Route::post('/', [DiscountApiController::class, 'store']);
+        Route::get('/{id}', [DiscountApiController::class, 'show']);
+        Route::put('/{id}', [DiscountApiController::class, 'update']);
+        Route::delete('/{id}', [DiscountApiController::class, 'destroy']);
+        Route::put('/archive/{id}', [DiscountApiController::class, 'archive']);
+        Route::put('/restore/{id}', [DiscountApiController::class, 'restore']);
 
-        Route::get('/customer', [CustomerDiscountController::class, 'index']);
-        Route::post('/customer', [CustomerDiscountController::class, 'store']);
-        Route::get('/customer/{id}', [CustomerDiscountController::class, 'show']);
-        Route::put('/customer/{id}', [CustomerDiscountController::class, 'update']);
-        Route::delete('/customer/{id}', [CustomerDiscountController::class, 'destroy']);
+        Route::get('/customer', [CustomerDiscountApiController::class, 'index']);
+        Route::post('/customer', [CustomerDiscountApiController::class, 'store']);
+        Route::get('/customer/{id}', [CustomerDiscountApiController::class, 'show']);
+        Route::put('/customer/{id}', [CustomerDiscountApiController::class, 'update']);
+        Route::delete('/customer/{id}', [CustomerDiscountApiController::class, 'destroy']);
     });
 
     Route::prefix('orders')->group(function () {
-        Route::get('/', [OrderController::class, 'index']);         // List all
-        Route::post('/', [OrderController::class, 'store']);        // Create
-        Route::get('/{id}', [OrderController::class, 'show']);      // Show one
-        Route::put('/{id}', [OrderController::class, 'update']);    // Update
-        Route::put('/{id}/archive', [OrderController::class, 'archive']); // Archive
-        Route::put('/{id}/restore', [OrderController::class, 'restore']); // Restore
-        Route::delete('/{id}', [OrderController::class, 'destroy']); // Delete
+        Route::get('/', [OrderApiController::class, 'index']);         // List all
+        Route::post('/', [OrderApiController::class, 'store']);        // Create
+        Route::get('/{id}', [OrderApiController::class, 'show']);      // Show one
+        Route::put('/{id}', [OrderApiController::class, 'update']);    // Update
+        Route::put('/{id}/archive', [OrderApiController::class, 'archive']); // Archive
+        Route::put('/{id}/restore', [OrderApiController::class, 'restore']); // Restore
+        Route::delete('/{id}', [OrderApiController::class, 'destroy']); // Delete
 
-        Route::get('/items', [OrderItemController::class, 'index']);
-        Route::post('/items', [OrderItemController::class, 'store']);
-        Route::delete('/items/{id}', [OrderItemController::class, 'destroy']);
+        Route::get('/items', [OrderItemApiController::class, 'index']);
+        Route::post('/items', [OrderItemApiController::class, 'store']);
+        Route::delete('/items/{id}', [OrderItemApiController::class, 'destroy']);
+
+        Route::get('/recent', [OrderApiController::class, 'getRecentOrders']);
     });
 
     Route::prefix('invoices')->group(function () {
-        Route::get('/', [InvoiceController::class, 'index']);
-        Route::post('/', [InvoiceController::class, 'store']);
-        Route::get('/{id}', [InvoiceController::class, 'show']);
-        Route::post('/{invoice}/send-sms', [InvoiceController::class, 'sendInvoiceSMS']);
+        Route::get('/', [InvoiceApiController::class, 'index']);
+        Route::post('/', [InvoiceApiController::class, 'store']);
+        Route::get('/{id}', [InvoiceApiController::class, 'show']);
+        Route::post('/{invoice}/send-sms', [InvoiceApiController::class, 'sendInvoiceSMS']);
 
-        Route::get('/payments', [InvoicePaymentController::class, 'index']);
-        Route::post('/payments', [InvoicePaymentController::class, 'store']);
+        Route::get('/payments', [InvoicePaymentApiController::class, 'index']);
+        Route::post('/payments', [InvoicePaymentApiController::class, 'store']);
     });
 
     // Pickup Requests
     Route::prefix('pickup-requests')->group(function () {
-        Route::controller(PickupRequestController::class)->group(function () {
+        Route::controller(PickupRequestApiController::class)->group(function () {
             Route::get('/', 'index');
             Route::post('/', 'store');
             Route::get('/payments', 'getAllPayments');
@@ -139,7 +154,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Delivery Requests
     Route::prefix('delivery-requests')->group(function () {
-        Route::controller(DeliveryRequestController::class)->group(function () {
+        Route::controller(DeliveryRequestApiController::class)->group(function () {
             Route::get('/', 'index');
             Route::post('/', 'store');
             Route::get('/payments', 'getAllPayments');

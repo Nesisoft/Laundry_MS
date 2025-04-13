@@ -1,10 +1,77 @@
 <?php
+// routes/web.php
 
-use App\Http\Controllers\LocalConfigController;
+use App\Http\Controllers\ConfigurationController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ItemController;
+use App\Http\Controllers\LocalConfigController;
 
-Route::get('/', function () {
-    return view('welcome');
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
+
+Route::get('/verify-pk', [ConfigurationController::class, 'verifyProductKey'])->name('verifyProductKey');
+Route::get('/configure-business', [ConfigurationController::class, 'configureBusiness'])->name('configureBusiness');
+Route::get('/configure-admin', [ConfigurationController::class, 'configureAdmin'])->name('configureAdmin');
+Route::get('/login', [ConfigurationController::class, 'login'])->name('login');
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+// Customers
+Route::prefix('customers')->name('customers.')->group(function () {
+    Route::get('/', [CustomerController::class, 'index'])->name('index');
+});
+
+// Orders
+Route::prefix('orders')->name('orders.')->group(function () {
+    Route::get('/', [OrderController::class, 'index'])->name('index');
+});
+
+// Items
+Route::prefix('items')->name('items.')->group(function () {
+    Route::get('/', [ItemController::class, 'index'])->name('index');
+});
+
+// Items
+Route::prefix('services')->name('services.')->group(function () {
+    Route::get('/', [ItemController::class, 'index'])->name('index');
+});
+
+// Items
+Route::prefix('employees')->name('employees.')->group(function () {
+    Route::get('/', [ItemController::class, 'index'])->name('index');
+});
+
+// Items
+Route::prefix('pickups')->name('pickups.')->group(function () {
+    Route::get('/', [ItemController::class, 'index'])->name('index');
+});
+
+// Items
+Route::prefix('deliveries')->name('deliveries.')->group(function () {
+    Route::get('/', [ItemController::class, 'index'])->name('index');
+});
+
+// Items
+Route::prefix('invoices')->name('invoices.')->group(function () {
+    Route::get('/', [ItemController::class, 'index'])->name('index');
+});
+
+// Items
+Route::prefix('discounts')->name('discounts.')->group(function () {
+    Route::get('/', [ItemController::class, 'index'])->name('index');
+});
+
+// Settings
+Route::prefix('settings')->name('settings.')->group(function () {
+    Route::get('/', [LocalConfigController::class, 'index'])->name('index');
+    Route::get('/local-config', [LocalConfigController::class, 'localConfig'])->name('local-config');
 });
 
 /*

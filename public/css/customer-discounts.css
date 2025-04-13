@@ -1,0 +1,225 @@
+/* Customer Discount specific styles */
+
+/* Table Styles */
+.table-container {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.data-table th {
+    background-color: var(--gray-50);
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+.data-table tbody tr:hover {
+    background-color: var(--gray-50);
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Status Badge */
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-badge.active {
+    background-color: var(--green-100);
+    color: var(--green-800);
+}
+
+.status-badge.expired {
+    background-color: var(--yellow-100);
+    color: var(--yellow-800);
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--gray-600);
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.btn-icon:hover {
+    background-color: var(--gray-100);
+    color: var(--dark-blue);
+}
+
+.btn-icon.edit-btn:hover {
+    color: var(--light-blue);
+}
+
+.btn-icon.delete-btn:hover {
+    color: var(--red-600);
+}
+
+/* Loading Cell */
+.loading-cell {
+    padding: 3rem !important;
+}
+
+.loading-cell .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 0.25rem solid var(--gray-200);
+    border-top-color: var(--light-blue);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Empty State */
+.empty-cell {
+    padding: 3rem !important;
+    text-align: center;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    color: var(--gray-300);
+    margin-bottom: 1rem;
+}
+
+.empty-state-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--gray-700);
+}
+
+.empty-state-description {
+    color: var(--gray-500);
+    margin-bottom: 1.5rem;
+    max-width: 30rem;
+}
+
+/* Discount Info in Modal */
+#discountInfoContainer {
+    background-color: var(--gray-50);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.discount-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.discount-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.discount-info-title {
+    font-weight: 600;
+    color: var(--dark-blue);
+}
+
+.discount-info-value {
+    font-weight: 700;
+    color: var(--light-blue);
+}
+
+.discount-info-detail {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--gray-600);
+}
+
+.discount-info-detail i {
+    width: 1rem;
+    text-align: center;
+    color: var(--gray-500);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .data-table {
+        display: block;
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .filters-container {
+        flex-direction: column;
+    }
+
+    .filters {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .filter-group {
+        width: 100%;
+    }
+
+    .actions {
+        margin-top: 1rem;
+        width: 100%;
+    }
+
+    .actions button {
+        width: 100%;
+    }
+}

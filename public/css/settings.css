@@ -1,0 +1,243 @@
+/* Settings specific styles */
+
+/* Settings Navigation */
+.settings-nav {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--gray-200);
+    overflow-x: auto;
+}
+
+.settings-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    color: var(--gray-700);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.settings-nav-item:hover {
+    background-color: var(--gray-100);
+    color: var(--dark-blue);
+}
+
+.settings-nav-item.active {
+    background-color: var(--light-blue-50);
+    color: var(--light-blue);
+    font-weight: 500;
+}
+
+.settings-nav-item i {
+    font-size: 1rem;
+}
+
+/* Settings Content */
+.settings-content {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.settings-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.settings-header h2 {
+    margin: 0 0 0.5rem;
+    color: var(--dark-blue);
+    font-size: 1.25rem;
+}
+
+.settings-header p {
+    margin: 0;
+    color: var(--gray-600);
+}
+
+.settings-section {
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.settings-section:last-child {
+    border-bottom: none;
+}
+
+.settings-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background-color: var(--gray-50);
+}
+
+.settings-section-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--gray-800);
+}
+
+.settings-section-content {
+    padding: 1.5rem;
+}
+
+/* Logo Upload */
+.logo-upload-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.logo-preview {
+    width: 150px;
+    height: 150px;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 1rem;
+    background-color: var(--gray-100);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--gray-200);
+}
+
+.logo-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.logo-upload-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.logo-preview:hover .logo-upload-overlay {
+    opacity: 1;
+}
+
+.logo-upload-overlay i {
+    color: var(--white);
+    font-size: 2rem;
+}
+
+#logoForm {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--gray-700);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.625rem;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius);
+    background-color: var(--white);
+    color: var(--gray-800);
+    font-size: 0.875rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--light-blue);
+    box-shadow: 0 0 0 3px rgba(var(--light-blue-rgb), 0.1);
+    outline: none;
+}
+
+.form-text {
+    font-size: 0.75rem;
+    color: var(--gray-600);
+    margin-top: 0.25rem;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* Button Styles */
+.btn-outline-danger {
+    background-color: transparent;
+    border: 1px solid var(--red-500);
+    color: var(--red-500);
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--red-50);
+}
+
+.btn-outline-secondary {
+    background-color: transparent;
+    border: 1px solid var(--gray-500);
+    color: var(--gray-700);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--gray-100);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .settings-nav {
+        padding-bottom: 0.5rem;
+    }
+
+    .settings-nav-item {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .settings-header {
+        padding: 1rem;
+    }
+
+    .settings-section-header,
+    .settings-section-content {
+        padding: 1rem;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions button {
+        width: 100%;
+    }
+}
