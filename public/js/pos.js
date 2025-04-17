@@ -40,6 +40,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalAmount = document.getElementById('totalAmount');
     const paymentBtn = document.getElementById('paymentBtn');
     const customerRequiredMessage = document.getElementById('customerRequiredMessage');
+    const cartCustomerSearch = document.getElementById('cartCustomerSearch');
+    const customerDropdown = document.getElementById('customerDropdown');
+    const customerDropdownContent = document.getElementById('customerDropdownContent');
     const selectCustomerBtn = document.getElementById('selectCustomerBtn');
     const selectedCustomerName = document.getElementById('selectedCustomerName');
     const selectedCustomerInfo = document.getElementById('selectedCustomerInfo');
@@ -366,9 +369,63 @@ document.addEventListener('DOMContentLoaded', function() {
             : selectedDiscount.value;
     }
 
+    // Event listeners for customer selection
+    cartCustomerSearch.addEventListener('focus', showCustomerDropdown);
+    cartCustomerSearch.addEventListener('input', filterCustomersInDropdown);
+    document.addEventListener('click', function(event) {
+        if (!cartCustomerSearch.contains(event.target) && !customerDropdown.contains(event.target)) {
+            hideCustomerDropdown();
+        }
+    });
+
+    // Functions for customer selection
+    function showCustomerDropdown() {
+        renderCustomersInDropdown(mockCustomers);
+        customerDropdown.classList.add('show');
+    }
+
+    function hideCustomerDropdown() {
+        customerDropdown.classList.remove('show');
+    }
+
+    function filterCustomersInDropdown() {
+        const searchTerm = cartCustomerSearch.value.toLowerCase();
+
+        const filteredCustomers = mockCustomers.filter(customer =>
+            customer.name.toLowerCase().includes(searchTerm) ||
+            customer.phone.includes(searchTerm) ||
+            customer.email.toLowerCase().includes(searchTerm)
+        );
+
+        renderCustomersInDropdown(filteredCustomers);
+    }
+
+    function renderCustomersInDropdown(customers) {
+        customerDropdownContent.innerHTML = '';
+
+        if (customers.length === 0) {
+            customerDropdownContent.innerHTML = `
+                <div class="no-customers-message">No customers found</div>
+            `;
+            return;
+        }
+
+        customers.forEach(customer => {
+            const customerItem = document.createElement('div');
+            customerItem.className = 'customer-item';
+            customerItem.innerHTML = `
+                <div class="customer-details">
+                    <span class="customer-item-name">${customer.name}</span>
+                    <span class="customer-item-phone">${customer.phone}</span>
+                </div>
+            `;
+            customerItem.addEventListener('click', () => selectCustomer(customer));
+            customerDropdownContent.appendChild(customerItem);
+        });
+    }
+
     function selectCustomer(customer) {
         selectedCustomer = customer;
-        selectedCustomerName.textContent = customer.name;
 
         selectedCustomerInfo.innerHTML = `
             <div class="customer-info">
@@ -379,9 +436,14 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         selectedCustomerInfo.classList.remove('hidden');
 
-        document.getElementById('changeCustomerBtn').addEventListener('click', openCustomerModal);
+        document.getElementById('changeCustomerBtn').addEventListener('click', function() {
+            selectedCustomerInfo.classList.add('hidden');
+            cartCustomerSearch.value = '';
+            cartCustomerSearch.focus();
+        });
 
-        closeModal(customerModal);
+        cartCustomerSearch.value = '';
+        hideCustomerDropdown();
         updateCartUI();
     }
 

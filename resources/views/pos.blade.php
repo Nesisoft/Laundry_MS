@@ -48,12 +48,29 @@
 
         <!-- Right Side - Cart -->
         <div class="pos-cart">
+
+            <!-- Replace the existing cart header section with this -->
             <div class="cart-header">
                 <h2 class="cart-title"><i class="fas fa-shopping-cart"></i> Cart</h2>
                 <button id="clearCartBtn" class="btn btn-outline btn-sm">Clear All</button>
             </div>
-            <div id="selectedCustomerInfo" class="selected-customer-info hidden">
-                <!-- Selected customer info will be displayed here -->
+
+            <!-- Add this customer selection section below the cart header -->
+            <div class="customer-selection">
+                <div class="customer-search-container">
+                    <div class="search-input-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="cartCustomerSearch" class="search-input" placeholder="Search customers..." autocomplete="off">
+                    </div>
+                </div>
+                <div id="customerDropdown" class="customer-dropdown">
+                    <div id="customerDropdownContent" class="customer-dropdown-content">
+                        <!-- Customers will be populated here -->
+                    </div>
+                </div>
+                <div id="selectedCustomerInfo" class="selected-customer-info hidden">
+                    <!-- Selected customer info will be displayed here -->
+                </div>
             </div>
 
             <div class="cart-items-container" id="cartItemsContainer">

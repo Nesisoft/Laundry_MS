@@ -1,17 +1,22 @@
 /* POS Layout */
 .pos-container {
     display: flex;
-    height: 100vh;
+    height: calc(
+        100vh - 64px
+    ); /* Subtract header height (adjust this value based on your header's actual height) */
     background-color: var(--gray-100);
+    position: relative;
+    margin-top: 64px; /* Add margin to account for header (adjust this value based on your header's actual height) */
 }
 
 /* Left Side - Services */
 .pos-services {
-    width: 66.666%;
+    width: calc(100% - 350px); /* Adjust width to account for fixed cart */
     padding: 1rem;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    margin-right: 350px; /* Add margin to prevent content from being hidden under cart */
 }
 
 .pos-header {
@@ -148,11 +153,18 @@
 
 /* Right Side - Cart */
 .pos-cart {
-    width: 33.333%;
+    width: 350px;
     background-color: var(--white);
     border-left: 1px solid var(--gray-200);
     display: flex;
     flex-direction: column;
+    position: fixed;
+    top: 64px; /* Position below header (adjust this value based on your header's actual height) */
+    right: 0;
+    height: calc(
+        100vh - 64px
+    ); /* Subtract header height (adjust this value based on your header's actual height) */
+    z-index: 5; /* Lower than header's z-index */
 }
 
 .cart-header {
@@ -173,17 +185,53 @@
 
 .selected-customer-info {
     background-color: #ebf5ff;
-    padding: 0.5rem 1rem;
-    margin: 0 1rem;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
     border-radius: var(--border-radius);
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
+/* Customer Selection in Cart */
+.customer-selection {
+    padding: 0 1rem 0.5rem;
+    border-bottom: 1px solid var(--gray-200);
+    position: relative;
+    margin: 1rem 0;
+}
+
+.customer-search-container {
+    margin-bottom: 0.5rem;
+}
+
+.customer-dropdown {
+    position: absolute;
+    top: calc(100% - 0.5rem);
+    left: 1rem;
+    right: 1rem;
+    background-color: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    z-index: 20;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.customer-dropdown.show {
+    max-height: 250px;
+}
+
+.customer-dropdown-content {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
 .customer-info {
-    display: flex;
-    flex-direction: column;
+    font-size: 0.75rem;
+    color: var(--gray-600);
 }
 
 .customer-name {
@@ -207,9 +255,16 @@
     text-decoration: underline;
 }
 
+.no-customers-message {
+    padding: 1rem;
+    text-align: center;
+    color: var(--gray-500);
+    font-size: 0.875rem;
+}
+
 .cart-items-container {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: auto; /* Allow scrolling within the cart items */
     padding: 1rem;
 }
 
@@ -304,6 +359,7 @@
 .cart-footer {
     border-top: 1px solid var(--gray-200);
     padding: 1rem;
+    background-color: var(--white); /* Ensure background is solid */
 }
 
 .discount-section {
@@ -408,11 +464,15 @@
 
 .customer-item {
     padding: 0.75rem;
-    border-radius: var(--border-radius);
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.customer-item:last-child {
+    border-bottom: none;
 }
 
 .customer-item:hover {
@@ -426,6 +486,7 @@
 
 .customer-item-name {
     font-weight: 500;
+    font-size: 0.875rem;
 }
 
 .customer-item-phone {
@@ -690,5 +751,68 @@
     }
     .close-btn {
         display: none;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .pos-services {
+        width: calc(100% - 300px);
+        margin-right: 300px;
+    }
+
+    .pos-cart {
+        width: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .pos-container {
+        flex-direction: column;
+    }
+
+    .pos-services {
+        width: 100%;
+        margin-right: 0;
+        height: calc(
+            100vh - 64px - 60px
+        ); /* Subtract header height and space for mobile cart toggle */
+    }
+
+    .pos-cart {
+        width: 100%;
+        height: calc(100vh - 64px); /* Subtract header height */
+        top: 64px; /* Position below header */
+        right: -100%;
+        transition: right 0.3s ease;
+    }
+
+    .pos-cart.open {
+        right: 0;
+    }
+
+    /* Cart toggle button for mobile */
+    .cart-toggle {
+        position: fixed;
+        bottom: 1rem;
+        right: 1rem;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        background-color: var(--dark-blue);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow-md);
+        z-index: 20;
+        cursor: pointer;
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        .cart-toggle {
+            display: flex;
+        }
     }
 }

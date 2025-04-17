@@ -443,9 +443,14 @@ textarea:focus {
 
 /* Header */
 .header {
+    position: fixed; /* Make header fixed */
+    top: 0;
+    left: 0;
+    right: 0;
     background-color: var(--white);
     box-shadow: var(--shadow-sm);
-    z-index: 10;
+    z-index: 10; /* Higher than cart's z-index */
+    height: 64px; /* Set explicit height (adjust this value based on your header's actual height) */
 }
 
 .header-content {
