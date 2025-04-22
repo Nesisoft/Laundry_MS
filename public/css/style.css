@@ -434,6 +434,12 @@ textarea:focus {
 }
 
 /* Main Content */
+
+.dashboard-container .main-content,
+.dashboard-container .sidebar {
+    margin-top: 60px;
+}
+
 .main-content {
     flex: 1;
     display: flex;
